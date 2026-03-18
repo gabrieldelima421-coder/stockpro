@@ -1,0 +1,315 @@
+
+body {
+  margin: 0;
+  background-image: url("img-fundo/background.png");
+  background-size: cover;
+  background-repeat: no-repeat;
+  background-attachment: fixed;
+  background-position: center -100px;
+
+}
+
+
+.colums {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-direction: column;
+  height: 100vh;   /* ocupa a tela toda */
+  width: 100%;
+}
+
+.colums h1 {
+    font-family: Arial, Helvetica, sans-serif;
+font-size: 60px;
+margin-top: -5px;
+color: rgb(0, 12, 235);
+ text-shadow: 0 2px 4px rgba(0, 0, 0, 0.5);
+}
+
+.colums form button {
+  margin-top: -4px;
+  padding: 1px 10px;
+  border-radius: 999px;
+  border: none;
+  background: #135ef5;
+  color: white;
+  font-weight: 600;
+  font-size: 15px;
+  cursor: pointer;
+  transition: transform 0.1s ease, box-shadow 0.1s ease, background 0.1s ease;
+}
+
+.colums form button:hover{
+   background: #016cf7;
+  box-shadow: 0 6px 15px rgba(19, 94, 245, 0.5);
+  transform: translateY(-1px);
+}
+
+.caixa {
+    display: flex;
+background-color: rgba(19, 94, 245, 0.6);
+border: solid black;
+  padding: 15px;
+  border-radius: 25px;
+align-items: center;
+flex-direction: column;
+gap: 10px;
+width: 200px;
+}
+
+
+.caixa form label {
+  font-family: Arial, Helvetica, sans-serif;
+    font-size: 18px;
+    font-weight: 600;
+color: black;
+}
+
+.caixa form input {
+    display: block;
+    margin-bottom: 10px;
+    height: 23px;
+    border-radius: 5px;
+    border: none;
+}
+
+.caixa a {
+    color: white;
+    font-size: 20px;
+    text-decoration: none;
+}
+
+.caixa a:hover {
+    color: rgb(236, 240, 11);
+}
+
+.caixa p {
+  color: black;
+  margin-top: -4px;
+  margin-bottom: 4px;
+  font-size: 18px;
+}
+
+/*Pop-up registar -----------------------------------------------------------*/
+.popup-cadastrar {
+  position: fixed;
+  inset: 0;
+  background-color: rgba(0, 0, 0, 0.5); /* fundo escuro */
+  display: none;
+  justify-content: center;
+  align-items: center;  
+  padding: 40px 0;          /* respiro em cima/baixo */
+  overflow-y: auto; 
+  z-index: 999;             /* fica acima de tudo */
+}
+
+.popup-cadastrar.aberto {
+  display: flex;
+}
+
+/* QUADRADO DO POP-UP (CAIXA DO CADASTRO) */
+.popup-filho {
+  background-color: #f5f7ff;               /* quase branco com leve azul */
+  border-radius: 18px;
+  padding: 24px 32px;
+  min-width: 320px;
+  max-width: 400px;
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.35);
+  border: 2px solid #135ef5;
+  position: relative;                      /* para o X ficar posicionado */
+  display: flex;
+  flex-direction: column;
+}
+
+/* FORMULÁRIO DENTRO DO POP-UP */
+#cadastro {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  margin-top: 10px;
+}
+
+/* TÍTULO "CADASTRAR" DO POP-UP */
+#cadastro h2 {
+  font-family: Arial, Helvetica, sans-serif;
+  text-align: center;
+  margin: 0 0 12px;
+  color: #135ef5;
+  letter-spacing: 1px;
+}
+
+/* LABELS DO POP-UP */
+#cadastro label {
+  font-family: Arial, Helvetica, sans-serif;
+  font-size: 16px;
+  color: #0f172a;
+  font-weight: 600;
+}
+
+/* INPUTS DO POP-UP */
+#cadastro input {
+  padding: 8px 10px;
+  border-radius: 6px;
+  border: 1px solid #cbd5f5;
+  font-size: 14px;
+  outline: none;
+}
+
+#cadastro input:focus {
+  border-color: #135ef5;
+  box-shadow: 0 0 0 2px rgba(19, 94, 245, 0.25);
+}
+
+/* BOTÃO REGISTRAR */
+#registrar {
+  margin-top: 14px;
+  padding: 8px 12px;
+  border-radius: 999px;
+  border: none;
+  background: #135ef5;
+  color: #ffffff;
+  font-weight: 600;
+  font-size: 15px;
+  cursor: pointer;
+  transition: transform 0.1s ease, box-shadow 0.1s ease, background 0.1s ease;
+}
+
+#registrar:hover {
+  background: #0a46c2;
+  box-shadow: 0 6px 15px rgba(19, 94, 245, 0.5);
+  transform: translateY(-1px);
+}
+
+/* BOTÃO X (FECHAR) NO CANTO SUPERIOR DIREITO DO QUADRADO */
+#fechar-btn {
+  position: absolute;
+  top: 8px;
+  right: 10px;
+  border: none;
+  background: transparent;
+  font-size: 18px;
+  font-weight: bold;
+  color: #64748b;
+  cursor: pointer;
+  padding: 2px 6px;
+  line-height: 1;
+  border-radius: 50%;
+  transition: background 0.15s ease, color 0.15s ease, transform 0.1s ease;
+}
+
+#fechar-btn:hover {
+  background: rgba(148, 163, 184, 0.25);
+  color: #111827;
+  transform: scale(1.1);
+}
+
+/*esstilo recuperar senha*/
+
+.janela-recuperar {
+  position: fixed;
+  inset: 0;
+  background-color: rgba(0, 0, 0, 0.5); /* fundo escuro */
+  display: none;
+  justify-content: center;
+  align-items: center;  
+  padding: 40px 0;          /* respiro em cima/baixo */
+  overflow-y: auto; 
+  z-index: 999;             /* fica acima de tudo */
+}
+
+.janela-recuperar.abrir {
+  display: flex;
+}
+
+.janela-recuperar-filho {
+  background-color: #f5f7ff;               /* quase branco com leve azul */
+  border-radius: 18px;
+  padding: 24px 32px;
+  min-width: 320px;
+  max-width: 400px;
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.35);
+  border: 2px solid #135ef5;
+  position: relative;                      /* para o X ficar posicionado */
+  display: flex;
+  flex-direction: column;
+}
+
+
+#recuperar {
+    display: flex;
+  flex-direction: column;
+  gap: 8px;
+  margin-top: 10px;
+}
+
+#recuperar h2 {
+    font-family: Arial, Helvetica, sans-serif;
+  text-align: center;
+  margin: 0 0 12px;
+  color: #135ef5;
+  letter-spacing: 1px;
+}
+
+#recuperar label {
+ font-family: Arial, Helvetica, sans-serif;
+  font-size: 16px;
+  color: #0f172a;
+  font-weight: 600;
+}
+
+#recuperar input {
+  padding: 8px 10px;
+  border-radius: 6px;
+  border: 1px solid #cbd5f5;
+  font-size: 14px;
+  outline: none;
+}
+
+#recuperar input:focus {
+    border-color: #135ef5;
+  box-shadow: 0 0 0 2px rgba(19, 94, 245, 0.25);
+}
+
+
+#btn-enviar {
+   margin-top: 14px;
+  padding: 8px 12px;
+  border-radius: 999px;
+  border: none;
+  background: #135ef5;
+  color: #ffffff;
+  font-weight: 600;
+  font-size: 15px;
+  cursor: pointer;
+  transition: transform 0.1s ease, box-shadow 0.1s ease, background 0.1s ease;
+}
+
+#btn-enviar:hover {
+  background: #0a46c2;
+  box-shadow: 0 6px 15px rgba(19, 94, 245, 0.5);
+  transform: translateY(-1px);
+}
+
+#recuperar-fecharbtn {
+    position: absolute;
+  top: 8px;
+  right: 10px;
+  border: none;
+  background: transparent;
+  font-size: 18px;
+  font-weight: bold;
+  color: #64748b;
+  cursor: pointer;
+  padding: 2px 6px;
+  line-height: 1;
+  border-radius: 50%;
+  transition: background 0.15s ease, color 0.15s ease, transform 0.1s ease;
+}
+
+#recuperar-fecharbtn:hover {
+    background: rgba(148, 163, 184, 0.25);
+  color: #111827;
+  transform: scale(1.1);
+}
+

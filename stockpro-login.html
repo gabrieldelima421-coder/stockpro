@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+    <head>
+        <meta charset="UTF-8">
+        <title>StockPro</title>
+        <link href="estilo-login.css" rel="stylesheet">
+    </head>
+    <body>
+        <div class="colums">
+            <h1>STOCK-PRO</h1>
+            <div class="caixa">
+
+            <form id="login">
+            <label for="usuario">E-mail/Usuário</label>
+            <input id="usuario"  name="usuario" type="text" placeholder="digite e-mail ou usuário">
+            <p id="digite-usuario"></p>
+            <label for="senha">Senha</label>
+            <input id="senha" name="senha" type="password" placeholder="digite sua senha">
+            <p id="digite-senha"></p>
+        <button id="btn-login" type="submit">Entrar</button>
+        <button id="btn-cadastro" type="button">Cadastrar</button><br>
+        <a href="#" id="link-recuperar">esqueceu a senha?</a>
+        </form>
+        </div>
+        </div>
+
+        <!--Pop-up para cadastrar----------------------------------- -->
+        <div class="popup-cadastrar" id="abrir">
+            <div class="popup-filho">
+
+<form id="cadastro">
+
+    <h2>CADASTRAR</h2>
+<button id="fechar-btn" type="button">X</button>
+
+    <label for="email">Email</label>
+<input id="email" name="email" type="email" placeholder="digite seu email">
+<p id="paragrafo-email"></p>
+
+<label for="senhaReg">Senha</label>
+<input id="senhaReg" name="senhaReg" type="password" placeholder="digite uma senha">
+
+<p id="paragrafo-senha"></p>
+<button id="registrar" type="submit">Registrar</button>
+</form>
+            </div>
+        </div>
+
+        <div class="janela-recuperar" id="aberto">
+            <div class="janela-recuperar-filho">
+
+                <form id="recuperar">
+                <h2>Recuperar senha</h2>
+
+<button id="recuperar-fecharbtn" type="button">X</button>
+
+                <label for="email-recuperar">E-mail</label>
+                <input id="email-recuperar" name="email-recuperar" type="email" placeholder="digite seu email">
+                <p id="paragrafo-recuperar"></p>
+<button id="btn-enviar" type="submit">Enviar</button>
+                </form>
+            </div>
+        </div>
+        <script src="login.js" defer></script>
+    </body>
+</html>

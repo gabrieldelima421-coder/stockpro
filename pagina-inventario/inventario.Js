@@ -455,18 +455,39 @@ function renderizarCategorias() {
       const input = document.createElement("input");
       const span = document.createElement("span");
 
-      label.style.cssText =
-        "display: block; margin: 6px 0; font-family: Arial, Helvetica, sans-serif;";
-      span.style.cssText = "margin-left: 6px;";
+     label.style.cssText = `
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin: 6px 0;
+    cursor: pointer;
+    font-family: Arial, Helvetica, sans-serif;
+  `;
 
-      input.type = "checkbox";
-      input.dataset.categoria = categoria.id;
-      span.textContent = categoria.id;
+  input.type = "checkbox";
+  input.dataset.categoria = categoria.id;
+  input.style.cursor = "pointer";
 
-      label.appendChild(input);
-      label.appendChild(span);
-      listaCategorias.appendChild(label);
-    } else {
+  span.textContent = categoria.id.toUpperCase();
+  span.style.cssText = `
+    display: inline-block;
+    margin: 5px;
+    padding: 5px 10px;
+    border-radius: 100px;
+    background-color: rgba(4, 77, 234, 0.7);
+    font-family: Arial, Helvetica, sans-serif;
+    color: #fff;
+    font-weight: bold;
+    border: none;
+    cursor: pointer;
+    text-shadow: none;
+  `;
+
+  label.appendChild(input);
+  label.appendChild(span);
+  listaCategorias.appendChild(label);
+}
+  else {
       const button = document.createElement("button");
       button.type = "button";
       button.textContent = categoria.id;

@@ -186,6 +186,7 @@ let ordemSelecionadaIndex = null;
 
 // estado da edição de categorias
 let modoEdicaoCategoria = false;
+let modoExclusaoCategoria = false;
 let categoriaSelecionada = null;
 let botaoCategoriaSelecionada = null;
 
@@ -350,6 +351,42 @@ function limparSelecaoCategoria() {
 }
 
 function renderPainelEditarCategoria() {
+  if (modoExclusaoCategoria) {
+    textoEdCat.innerHTML = `
+      <p>Selecione uma ou mais categorias abaixo para excluir.</p>
+      <button id="select-todas-cat" type="button">Selecionar tudo</button>
+      <button id="limpar-selecao-cat" type="button">Limpar selecao</button>
+      <button id="confirmar-excluir-cat" type="button">Excluir selecionadas</button>
+    `;
+
+    const selecionarTudo = document.getElementById("select-todas-cat");
+    const limparSelecao = document.getElementById("limpar-selecao-cat");
+    const confirmarExclusao = document.getElementById("confirmar-excluir-cat");
+
+    selecionarTudo.addEventListener("click", () => {
+      const checkboxes = listaCategorias.querySelectorAll(
+        'input[type="checkbox"]',
+      );
+
+      for (let i = 0; i < checkboxes.length; i++) {
+        checkboxes[i].checked = true;
+      }
+    });
+
+    limparSelecao.addEventListener("click", () => {
+      const checkboxes = listaCategorias.querySelectorAll(
+        'input[type="checkbox"]',
+      );
+
+      for (let i = 0; i < checkboxes.length; i++) {
+        checkboxes[i].checked = false;
+      }
+    });
+
+    confirmarExclusao.addEventListener("click", excluirCategoriasSelecionadas);
+    return;
+  }
+
   if (!modoEdicaoCategoria) {
     textoEdCat.innerHTML = "";
     return;
@@ -396,6 +433,15 @@ function renderizarCategorias() {
   listaCategorias.innerHTML = "";
   selcionarCategoria.innerHTML = `<option value="" selected disabled>Selecione uma categoria</option>`;
 
+  if (categorias.length === 0) {
+    modoEdicaoCategoria = false;
+    modoExclusaoCategoria = false;
+    categoriaSelecionada = null;
+    botaoCategoriaSelecionada = null;
+    btnEditarCategoria.textContent = "Editar";
+    btnExcluirCat.textContent = "Excluir Categoria";
+  }
+
   btnEditarCategoria.hidden = categorias.length === 0;
   btnExcluirCat.hidden = categorias.length === 0;
 
@@ -404,19 +450,37 @@ function renderizarCategorias() {
   for (let i = 0; i < categorias.length; i++) {
     const categoria = categorias[i];
 
-    const button = document.createElement("button");
-    button.type = "button";
-    button.textContent = categoria.id;
-    button.dataset.categoria = categoria.id;
+    if (modoExclusaoCategoria) {
+      const label = document.createElement("label");
+      const input = document.createElement("input");
+      const span = document.createElement("span");
 
-    aplicarEstiloBaseCategoria(button);
+      label.style.cssText =
+        "display: block; margin: 6px 0; font-family: Arial, Helvetica, sans-serif;";
+      span.style.cssText = "margin-left: 6px;";
 
-    if (modoEdicaoCategoria && categoriaSelecionada === categoria.id) {
-      aplicarEstiloCategoriaSelecionada(button);
-      botaoCategoriaSelecionada = button;
+      input.type = "checkbox";
+      input.dataset.categoria = categoria.id;
+      span.textContent = categoria.id;
+
+      label.appendChild(input);
+      label.appendChild(span);
+      listaCategorias.appendChild(label);
+    } else {
+      const button = document.createElement("button");
+      button.type = "button";
+      button.textContent = categoria.id;
+      button.dataset.categoria = categoria.id;
+
+      aplicarEstiloBaseCategoria(button);
+
+      if (modoEdicaoCategoria && categoriaSelecionada === categoria.id) {
+        aplicarEstiloCategoriaSelecionada(button);
+        botaoCategoriaSelecionada = button;
+      }
+
+      listaCategorias.appendChild(button);
     }
-
-    listaCategorias.appendChild(button);
 
     const option = document.createElement("option");
     option.value = categoria.id;
@@ -462,6 +526,11 @@ function selecionarCategoriaParaEditar(botao) {
 
 function editarCat(event) {
   event.preventDefault();
+
+  if (modoExclusaoCategoria) {
+    modoExclusaoCategoria = false;
+    btnExcluirCat.textContent = "Excluir Categoria";
+  }
 
   modoEdicaoCategoria = !modoEdicaoCategoria;
   btnEditarCategoria.textContent = modoEdicaoCategoria
@@ -538,11 +607,91 @@ function renomearCategoriaSelecionada() {
 }
 
 // EXCLUIR CATEGORIA ==========================================================
-function exlcuirCat() {
-  textoEdCat.innerHTML = `<p>selecione uma ou mais categorias para excluir</p>`;
+//funçao abrir modo ediçao
+function abrirEdEx(event) {
+  event.preventDefault();
+
+  paragrafoErroCate.textContent = "";
+
+  if (modoEdicaoCategoria) {
+    modoEdicaoCategoria = false;
+    btnEditarCategoria.textContent = "Editar";
+    limparSelecaoCategoria();
+  }
+
+  modoExclusaoCategoria = !modoExclusaoCategoria;
+  btnExcluirCat.textContent = modoExclusaoCategoria
+    ? "Fechar exclusao"
+    : "Excluir Categoria";
+
+  renderizarCategorias();
+  renderPainelEditarCategoria();
 }
 
-btnExcluirCat.addEventListener("click", exlcuirCat);
+
+//funçao exlcuir
+function excluirCat(id) {
+  const removCat = categorias.findIndex((categoria) => {
+    return categoria.id === id;
+  });
+
+  if (removCat === -1) {
+    return false;
+  }
+
+  for (let i = 0; i < produtos.length; i++) {
+    const categoriaProduto = String(produtos[i].categoria ?? "")
+      .trim()
+      .toLowerCase();
+
+    if (categoriaProduto === id) {
+      produtos[i].categoria = "";
+    }
+  }
+
+  categorias.splice(removCat, 1);
+  return true;
+}
+
+function excluirCategoriasSelecionadas() {
+  const marcadas = listaCategorias.querySelectorAll(
+    'input[type="checkbox"]:checked',
+  );
+
+  if (marcadas.length === 0) {
+    paragrafoErroCate.textContent =
+      "Selecione pelo menos 1 categoria para excluir.";
+    return;
+  }
+
+  paragrafoErroCate.textContent = "";
+
+  let removidas = 0;
+
+  for (let i = 0; i < marcadas.length; i++) {
+    const idCategoria = String(marcadas[i].dataset.categoria ?? "")
+      .trim()
+      .toLowerCase();
+
+    if (excluirCat(idCategoria)) {
+      removidas++;
+    }
+  }
+
+  limparSelecaoCategoria();
+  renderizarCategorias();
+  renderPainelEditarCategoria();
+  renderProdutos(produtos);
+
+  if (removidas === 0) {
+    paragrafoErroCate.textContent = "Nenhuma categoria foi removida.";
+    return;
+  }
+
+  paragrafoErroCate.textContent = `${removidas} categoria(s) removida(s) com sucesso.`;
+}
+
+
 
 // eventos das categorias
 btnCategoria.addEventListener("click", abrirModalCategorias);
@@ -554,10 +703,15 @@ formCategorias.addEventListener("submit", (e) => {
 });
 
 btnEditarCategoria.addEventListener("click", editarCat);
+btnExcluirCat.addEventListener("click", abrirEdEx);
 
 listaCategorias.addEventListener("click", (e) => {
   const btn = e.target.closest("button");
   if (!btn) return;
+
+  if (modoExclusaoCategoria) {
+    return;
+  }
 
   if (modoEdicaoCategoria) {
     selecionarCategoriaParaEditar(btn);

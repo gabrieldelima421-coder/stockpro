@@ -51,6 +51,7 @@ const form = document.getElementById("formulario");
 const codigo = document.getElementById("codigo");
 const nome = document.getElementById("nome-produto");
 const quantidade = document.getElementById("quantidade");
+const paragrafoErroRegistro = document.getElementById("erro-registro");
 
 // Ponto de reposição
 const ES = document.getElementById("ES");
@@ -236,6 +237,21 @@ function calcularPontoReposicao(estoqueSeg, consMedio, prazo) {
 
   return es + c * p;
 }
+
+// FUNÇAO HELPER PARA FAZER NOVA TABELA SE PASSAR DE 20 ITENS REGISTRADOS
+
+function mostrarBtn(btn, arr) {
+if (arr.length > 20) {
+btn.hidden = false
+}
+}
+
+function novaTabela(e) {
+const area = e.currentTarget.dataset.area
+
+}
+
+
 
 // ============================================================================
 // 4) RENDER PRODUTOS / ORDENS
@@ -652,6 +668,7 @@ function abrirEdEx(event) {
 
 //funçao exlcuir
 function excluirCat(id) {
+ 
   const removCat = categorias.findIndex((categoria) => {
     return categoria.id === id;
   });
@@ -750,6 +767,7 @@ registrar.addEventListener("click", (e) => {
   e.preventDefault();
   abrirModal(popup);
   form.reset();
+  paragrafoErroRegistro.textContent = "";
   codigo.focus();
 });
 
@@ -763,13 +781,29 @@ function adicionarLinha(event) {
   const valorNome = nome.value.trim();
   const qtdStr = quantidade.value.trim();
   const valorQuantidade = Number(qtdStr);
-  const categoriaValor = selcionarCategoria.value.trim().toLowerCase();
+  const categoriaValor = String(selcionarCategoria.value ?? "")
+    .trim()
+    .toLowerCase();
 
-  if (valorCodigo === "" || valorNome === "" || qtdStr === "") return;
-  if (categoriaValor === "") return;
-  if (!Number.isInteger(valorQuantidade) || valorQuantidade < 0) return;
+  paragrafoErroRegistro.textContent = "";
 
-  if (acharProdutoPorCodigo(valorCodigo)) return;
+  if (valorCodigo === "" || valorNome === "" || qtdStr === "") {
+    paragrafoErroRegistro.textContent =
+      "Preencha codigo, nome e quantidade para salvar o produto.";
+    return;
+  }
+
+  if (!Number.isInteger(valorQuantidade) || valorQuantidade < 0) {
+    paragrafoErroRegistro.textContent =
+      "A quantidade precisa ser um numero inteiro maior ou igual a zero.";
+    return;
+  }
+
+  if (acharProdutoPorCodigo(valorCodigo)) {
+    paragrafoErroRegistro.textContent =
+      "Ja existe um produto cadastrado com esse codigo.";
+    return;
+  }
 
   const valorPontoReposicao = calcularPontoReposicao(
     ES.value.trim(),
@@ -788,6 +822,7 @@ function adicionarLinha(event) {
   renderProdutos(produtos);
 
   form.reset();
+  paragrafoErroRegistro.textContent = "";
   fecharModal(popup);
 }
 form.addEventListener("submit", adicionarLinha);

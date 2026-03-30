@@ -75,6 +75,14 @@ body {
   flex-direction: column;
   align-items: center;
   margin-top: 20px;
+}
+.controles-paginacao {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 10px;
+  flex-wrap: wrap;
+  margin: 8px 0 24px;
 } /* faixa de controles acima da tabela */
 .controles-tabela {
   width: 70%;
@@ -193,6 +201,12 @@ td.negativo {
   padding: 24px 32px;
   border-radius: 8px;
   width: min(920px,95vw);
+}
+#lista-categorias {
+  margin-top: 12px;
+}
+.popup-categorias .controles-paginacao {
+  margin-bottom: 0;
 }
 
 /* POP-UP REGISTRO */

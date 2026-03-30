@@ -246,9 +246,21 @@ btn.hidden = false
 }
 }
 
-function novaTabela(e) {
-const area = e.currentTarget.dataset.area
+let paginaAtual = 1 
 
+function novaPagina() {
+const totalPro = produtos.length
+const limite = 20
+
+let totalPaginas = 0
+  
+const paginas = totalPro / limite
+totalPaginas = Math.ceil(paginas)
+
+if (paginaAtual < totalPaginas) {
+paginaAtual++
+renderProdutos(produtos.slice((paginaAtual - 1) * limite, paginaAtual * limite))
+}
 }
 
 

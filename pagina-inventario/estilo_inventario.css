@@ -41,6 +41,17 @@ body {
   text-shadow: 0 2px 4px rgba(0, 0, 0, 0.4);
   margin-top: 20px;
 } /* ---------------- BOTÕES ---------------- */
+.alerta-reposicao {
+  margin: 8px auto 22px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+  text-align: center;
+}
+.alerta-reposicao-texto {
+  font-weight: bold;
+}
 .botoes {
   display: flex;
   justify-content: center;
@@ -120,7 +131,8 @@ body {
   display: flex;
   align-items: center;
   gap: 8px;
-  margin: 0;
+  margin: 0 0 0 auto;
+  justify-content: flex-end;
 }
 .barra-busca label {
   position: static;
@@ -200,10 +212,39 @@ td.negativo {
   background: #fff;
   padding: 24px 32px;
   border-radius: 8px;
-  width: min(920px,95vw);
+  width: min(920px, 95vw);
+  max-height: 90vh;
+  overflow-y: auto;
 }
 #lista-categorias {
   margin-top: 12px;
+  max-height: min(52vh, 560px);
+  overflow-y: auto;
+  padding-right: 6px;
+}
+.categoria-exclusao-item {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin: 6px 0;
+  cursor: pointer;
+  font-family: Arial, Helvetica, sans-serif;
+}
+.categoria-exclusao-checkbox {
+  cursor: pointer;
+}
+.categoria-chip {
+  display: inline-block;
+  margin: 5px;
+  padding: 5px 10px;
+  border-radius: 100px;
+  background: linear-gradient(to bottom, rgb(3, 15, 244), rgb(52, 89, 210), rgb(107, 111, 187));
+  font-family: Arial, Helvetica, sans-serif;
+  color: #fff;
+  font-weight: bold;
+  border: 1px solid rgba(5, 23, 128, 0.35);
+  text-shadow: -1px -1px 0 rgb(0, 0, 0), 1px -1px 0 rgb(0, 0, 0),
+    -1px 1px 0 rgb(0, 0, 0), 1px 1px 0 rgb(0, 0, 0);
 }
 .popup-categorias .controles-paginacao {
   margin-bottom: 0;
@@ -638,6 +679,29 @@ td.negativo {
 .editar_ordem.aberto {
   display: flex;
 } /* MODAL EDITAR ORDEM */
+.editar_ordens_conteudo {
+  position: relative;
+  background: #fff;
+  padding: 24px 32px;
+  border-radius: 8px;
+  width: min(920px, 95vw);
+  max-height: 90vh;
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+}
+
+.editar_ordens_conteudo > button,
+.editar_ordens_conteudo form button {
+  width: auto;
+  min-width: 90px;
+  max-width: 180px;
+  padding: 6px 12px;
+  height: 32px;
+  font-size: 13px;
+  align-self: flex-start;
+}
+
 .editar_ordem_dentro {
   position: relative;
   background: #fff;
@@ -656,39 +720,107 @@ td.negativo {
 }
 
 /* =======================================================================
-   PADRÃO DE TODOS OS BOTÕES (mesmo azul do thead) + hover
-   Cole NO FINAL do seu CSS
-   Obs: não mexe em tamanhos/posições; só padroniza visual.
+   PADRÃO VISUAL GLOBAL (botões + campos) + responsividade
    ======================================================================= */
-
-/* não mexe no botão legenda (ele é vermelho e disabled por propósito) */
-button:not(#button_legenda) {
-  background-color: rgba(4, 77, 234, 0.8);
-  color: #fff;
-
-  /* mantém um padrão simples */
-  border: none;              /* se algum botão precisar borda, você coloca regra específica depois */
-  font-family: Arial, Helvetica, sans-serif;
-  font-weight: bold;
-  text-transform: uppercase;
-
-  /* mesmo efeito de contraste que você já usa */
-  text-shadow: -1px -1px 0 rgb(0, 0, 0), 1px -1px 0 rgb(0, 0, 0),
-    -1px 1px 0 rgb(0, 0, 0), 1px 1px 0 rgb(0, 0, 0);
-
-  transition: transform 0.12s ease, box-shadow 0.15s ease, filter 0.15s ease;
+:root {
+  --azul-1: rgb(3, 15, 244);
+  --azul-2: rgb(52, 89, 210);
+  --azul-3: rgb(107, 111, 187);
+  --raio-padrao: 10px;
 }
 
-/* hover em todos (menos disabled) */
+button:not(#button_legenda) {
+  border: 1px solid rgba(5, 23, 128, 0.35);
+  border-radius: var(--raio-padrao);
+  background: linear-gradient(to bottom, var(--azul-1), var(--azul-2), var(--azul-3));
+  color: #fff;
+  font-family: Arial, Helvetica, sans-serif;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.2px;
+  text-shadow: -1px -1px 0 rgb(0, 0, 0), 1px -1px 0 rgb(0, 0, 0),
+    -1px 1px 0 rgb(0, 0, 0), 1px 1px 0 rgb(0, 0, 0);
+  transition: transform 0.12s ease, box-shadow 0.15s ease, filter 0.15s ease;
+}
 button:not(:disabled):not(#button_legenda):hover {
   transform: translateY(-1px);
   box-shadow: 0 6px 14px rgba(0, 0, 0, 0.22);
   filter: brightness(1.08);
 }
-
-/* opcional: se algum botão tiver border antigo e você quer manter visual limpo */
-button:not(#button_legenda) {
-  border-color: transparent;
+input:not([type="checkbox"]):not([type="radio"]),
+select,
+textarea {
+  border: 1px solid #c7ced9;
+  border-radius: var(--raio-padrao);
+  background: #fff;
+  font-family: Arial, Helvetica, sans-serif;
+  font-size: 15px;
+  transition: border-color 0.15s ease, box-shadow 0.15s ease;
+}
+input:not([type="checkbox"]):not([type="radio"]):focus,
+select:focus,
+textarea:focus {
+  outline: none;
+  border-color: var(--azul-2);
+  box-shadow: 0 0 0 3px rgba(52, 89, 210, 0.18);
 }
 
+@media (max-width: 900px) {
+  .controles-tabela {
+    width: 90%;
+  }
+  table,
+  .popup_ordens_conteudo table {
+    width: 100%;
+  }
+  .popup_ordens_conteudo > #buscar_ordens {
+    width: 100%;
+  }
+}
 
+@media (max-width: 640px) {
+  .alerta-reposicao-texto {
+    font-size: 22px;
+    padding: 0 10px;
+  }
+  .botoes {
+    gap: 10px;
+  }
+  .botoes button {
+    width: 100%;
+    max-width: 280px;
+    min-width: 0;
+    height: 40px;
+  }
+  .controles-tabela {
+    width: 94%;
+    flex-direction: column;
+    align-items: stretch;
+    gap: 10px;
+  }
+  .filtro,
+  .barra-busca {
+    width: 100%;
+    flex-wrap: wrap;
+  }
+  .filtro select,
+  #buscar {
+    width: 100%;
+    min-width: 0;
+  }
+  .popup-conteudo,
+  .popup-categorias-conteudo,
+  .popup_ordens_conteudo,
+  .ligar_Input_conteudo,
+  .ligar_Input_saidaVenda_conteudo,
+  .editar_ordens_conteudo,
+  .editar_ordem_dentro {
+    width: 96vw;
+    padding: 16px 14px;
+  }
+  th,
+  td {
+    font-size: 14px;
+    padding: 8px 6px;
+  }
+}

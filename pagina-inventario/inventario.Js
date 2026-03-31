@@ -405,31 +405,12 @@ function renderCategoriasPagina(listaPagina) {
  const label = document.createElement("label");
  const input = document.createElement("input");
  const span = document.createElement("span");
- label.style.cssText = `
- display: flex;
- align-items: center;
- gap: 8px;
- margin: 6px 0;
- cursor: pointer;
- font-family: Arial, Helvetica, sans-serif;
- `;
+ label.className = "categoria-exclusao-item";
  input.type = "checkbox";
  input.dataset.categoria = categoria.id;
- input.style.cursor = "pointer";
+ input.className = "categoria-exclusao-checkbox";
  span.textContent = categoria.id.toUpperCase();
- span.style.cssText = `
- display: inline-block;
- margin: 5px;
- padding: 5px 10px;
- border-radius: 100px;
- background-color: rgba(4, 77, 234, 0.7);
- font-family: Arial, Helvetica, sans-serif;
- color: #fff;
- font-weight: bold;
- border: none;
- cursor: pointer;
- text-shadow: none;
- `;
+ span.className = "categoria-chip";
  label.appendChild(input);
  label.appendChild(span);
  listaCategorias.appendChild(label);
@@ -887,67 +868,102 @@ function filtroInventario() {
  }
  paginacaoInventario.setDados(listaOrdenada);
 }
+function atualizarVisibilidadeBotoesFiltro() {
+ const mostrar = Boolean(filtroOpcoes.value);
+ btnAplicarFiltro.hidden = !mostrar;
+ btnLimparFiltro.hidden = !mostrar;
+}
 btnAplicarFiltro.addEventListener("click", filtroInventario);
 btnLimparFiltro.addEventListener("click", () => {
  filtroOpcoes.value = "";
  paginacaoInventario.setDados(produtos);
+ atualizarVisibilidadeBotoesFiltro();
 });
+filtroOpcoes.addEventListener("change", atualizarVisibilidadeBotoesFiltro);
+atualizarVisibilidadeBotoesFiltro();
 // ============================================================================
 // 10) POP-UP EDITAR PRODUTO
 // ============================================================================
-editar.addEventListener("click", (e) => {
- e.preventDefault();
- abrirModal(popUpEditar);
-});
-btnFecharEditar.addEventListener("click", () => fecharModal(popUpEditar));
-popUpEditar.addEventListener("click", (e) => fecharFora(e, popUpEditar));
-formEditar.addEventListener("submit", (e) => e.preventDefault());
-function encontrarProdutoEditar() {
- const valorEncontrarPro = encontrarPro.value.trim().toLowerCase();
- if (valorEncontrarPro === "") {
- paragrafoInputEditar.textContent =
- "Por favor, insira um termo de pesquisa.";
- return;
+
+if (
+ editar &&
+ popUpEditar &&
+ btnFecharEditar &&
+ formEditar &&
+ encontrarPro &&
+ btnPesquisarNoEditar &&
+ paragrafoInputEditar &&
+ divBtn &&
+ listaProd
+) {
+ editar.addEventListener("click", (e) => {
+  e.preventDefault();
+  abrirModal(popUpEditar);
+ });
+
+ btnFecharEditar.addEventListener("click", () => fecharModal(popUpEditar));
+ popUpEditar.addEventListener("click", (e) => fecharFora(e, popUpEditar));
+ formEditar.addEventListener("submit", (e) => e.preventDefault());
+
+ function encontrarProdutoEditar() {
+  const valorEncontrarPro = encontrarPro.value.trim().toLowerCase();
+
+  if (valorEncontrarPro === "") {
+   paragrafoInputEditar.textContent =
+    "Por favor, insira um termo de pesquisa.";
+   return;
+  }
+
+  paragrafoInputEditar.textContent = "";
+  listaProd.innerHTML = "";
+  listaProd.classList.remove("aberto");
+  divBtn.classList.remove("aberto");
+
+  let encontrou = false;
+
+  for (let i = 0; i < produtos.length; i++) {
+   const cod = String(produtos[i].codigo ?? "").toLowerCase();
+   const nom = String(produtos[i].nome ?? "").toLowerCase();
+
+   if (valorEncontrarPro === cod || valorEncontrarPro === nom) {
+    encontrou = true;
+
+    const label = document.createElement("label");
+    const input = document.createElement("input");
+    const span = document.createElement("span");
+
+    span.style.cssText =
+     "font-family: Arial, Helvetica, sans-serif; margin-left: 5px; font-weight: 400;";
+
+    input.type = "checkbox";
+    span.textContent =
+     valorEncontrarPro === cod ? produtos[i].codigo : produtos[i].nome;
+
+    label.appendChild(input);
+    label.appendChild(span);
+    listaProd.appendChild(label);
+   }
+  }
+
+  if (encontrou) {
+   listaProd.classList.add("aberto");
+   divBtn.classList.add("aberto");
+  } else {
+   paragrafoInputEditar.textContent = "Produto não encontrado.";
+  }
  }
- paragrafoInputEditar.textContent = "";
- listaProd.innerHTML = "";
- listaProd.classList.remove("aberto");
- divBtn.classList.remove("aberto");
- let encontrou = false;
- for (let i = 0; i < produtos.length; i++) {
- const cod = String(produtos[i].codigo ?? "").toLowerCase();
- const nom = String(produtos[i].nome ?? "").toLowerCase();
- if (valorEncontrarPro === cod || valorEncontrarPro === nom) {
- encontrou = true;
- const label = document.createElement("label");
- const input = document.createElement("input");
- const span = document.createElement("span");
- span.style.cssText =
- "font-family: Arial, Helvetica, sans-serif; margin-left: 5px; font-weight: 400;";
- input.type = "checkbox";
- span.textContent =
- valorEncontrarPro === cod ? produtos[i].codigo : produtos[i].nome;
- label.appendChild(input);
- label.appendChild(span);
- listaProd.appendChild(label);
- }
- }
- if (encontrou) {
- listaProd.classList.add("aberto");
- divBtn.classList.add("aberto");
- } else {
- paragrafoInputEditar.textContent = "Produto não encontrado.";
- }
+
+ encontrarPro.addEventListener("keydown", (e) => {
+  if (e.key !== "Enter") return;
+  e.preventDefault();
+  encontrarProdutoEditar();
+ });
+
+ btnPesquisarNoEditar.addEventListener("click", (event) => {
+  event.preventDefault();
+  encontrarProdutoEditar();
+ });
 }
-encontrarPro.addEventListener("keydown", (e) => {
- if (e.key !== "Enter") return;
- e.preventDefault();
- encontrarProdutoEditar();
-});
-btnPesquisarNoEditar.addEventListener("click", (event) => {
- event.preventDefault();
- encontrarProdutoEditar();
-});
 // ============================================================================
 // 11) POP-UP ORDENS + MODAIS ENTRADA / SAÍDA
 // ============================================================================

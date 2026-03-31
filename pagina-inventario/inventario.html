@@ -11,16 +11,16 @@
  <h1>Stock-pro</h1>
  <h2 id="h2titulo">Painel de Controle</h2>
  </div>
- <p>Cor de fundo requer sua atenção:</p>
- <button id="button_legenda" type="button" disabled></button>
- <span style="font-weight: bold;"
+ <div class="alerta-reposicao">
+ <span class="alerta-reposicao-texto"
  >URGENTE!!! (quantidade abaixo do ponto de reposição)</span
  >
+ <button id="button_legenda" type="button" disabled></button>
+ </div>
  <!--======================= BOTÕES ============================-->
  <div class="botoes">
  <button id="categoria" type="button">Categorias</button>
  <button id="registro" type="button">Registrar</button>
- <button id="editar" type="button">Editar</button>
  <button id="ordens" type="button">Ordens</button>
  </div>
  <h2
@@ -56,8 +56,8 @@
  <option value="reposicao_negativo">Ponto de Reposição: negativo</option>
  <option value="reposicao_positivo">Ponto de Reposição: positivo</option>
  </select>
- <button id="aplicar_filtro" type="button">Aplicar filtro</button>
- <button id="limpar_filtro" type="button">Limpar filtro</button>
+ <button id="aplicar_filtro" type="button" hidden>Aplicar filtro</button>
+ <button id="limpar_filtro" type="button" hidden>Limpar filtro</button>
  </div>
  <!--=======================================================================================-->
  <div class="barra-busca">
@@ -191,35 +191,6 @@
  step="1"
  />
  <button type="submit">Salvar</button>
- </form>
- </div>
- </div>
- <!-- POP-UP PARA EDITAR =========================================================-->
- <div class="popup-editar" id="popup-editar">
- <div class="popup-editar-filho">
- <button id="btn-fechar-editar" type="button">X</button>
- <h2>Editar Produto</h2>
- <form id="form-editar">
- <label for="encontrar">Encontrar produto</label>
- <div class="linha-pesquisa">
- <input
- id="encontrar"
- name="encontrar"
- type="search"
- placeholder="nome, código..."
- autocomplete="off"
- />
- <button id="btn_pesquisa_editar" type="button">Pesquisar</button>
- </div>
- <p id="paragrafo_input_editar"></p>
- <div class="botoes-lista" id="botoes-lista">
- <button id="adicionar_categoria" type="button">Adicionar</button>
- <button id="editar_produto" type="button">Editar</button>
- <button id="remover_produtos" type="button">Remover</button>
- </div>
- <div class="mostrar-lista" id="mostrar-lista">
- <!-- aqui entra a lista automática -->
- </div>
  </form>
  </div>
  </div>

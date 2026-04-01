@@ -7,7 +7,6 @@
 // ------------------------------
 const btnCategoria = document.getElementById("categoria");
 const registrar = document.getElementById("registro");
-const editar = document.getElementById("editar");
 const ordens = document.getElementById("ordens");
 // ------------------------------
 // ÁREA "INVENTÁRIO" (filtro + busca + tabela)
@@ -54,22 +53,9 @@ const quantidade = document.getElementById("quantidade");
 const paragrafoErroRegistro = document.getElementById("erro-registro");
 // Ponto de reposição
 const ES = document.getElementById("ES");
+const consumoMes = document.getElementById("consumo-mes");
 const consumo = document.getElementById("consumo");
 const prazoEntrega = document.getElementById("prazo-entrega");
-// ------------------------------
-// POP-UP "EDITAR PRODUTO"
-// ------------------------------
-const popUpEditar = document.getElementById("popup-editar");
-const btnFecharEditar = document.getElementById("btn-fechar-editar");
-const formEditar = document.getElementById("form-editar");
-const encontrarPro = document.getElementById("encontrar");
-const btnPesquisarNoEditar = document.getElementById("btn_pesquisa_editar");
-const paragrafoInputEditar = document.getElementById("paragrafo_input_editar");
-const divBtn = document.getElementById("botoes-lista");
-const btnAdicionarCat = document.getElementById("adicionar_categoria");
-const editarPro = document.getElementById("editar_produto");
-const removerPro = document.getElementById("remover_produtos");
-const listaProd = document.getElementById("mostrar-lista");
 // ------------------------------
 // POP-UP "ORDENS"
 // ------------------------------
@@ -209,6 +195,9 @@ function acharProdutoPorCodigo(cod) {
  }
  return null;
 }
+function arredondarPontoReposicao(valor) {
+ return Math.ceil(valor);
+}
 function calcularPontoReposicao(estoqueSeg, consMedio, prazo) {
  const es = Number(estoqueSeg);
  const c = Number(consMedio);
@@ -216,8 +205,65 @@ function calcularPontoReposicao(estoqueSeg, consMedio, prazo) {
  if (!Number.isFinite(es) || es < 0) return "-";
  if (!Number.isFinite(c) || c < 0) return "-";
  if (!Number.isFinite(p) || p < 0) return "-";
- return es + c * p;
+ return arredondarPontoReposicao(es + c * p);
 }
+function calcularPontoReposicaoMensal(estoqueSeg, consMedioMensal, prazoDias) {
+ const es = Number(estoqueSeg);
+ const cm = Number(consMedioMensal);
+ const p = Number(prazoDias);
+ if (!Number.isFinite(es) || es < 0) return "-";
+ if (!Number.isFinite(cm) || cm < 0) return "-";
+ if (!Number.isFinite(p) || p < 0) return "-";
+ return arredondarPontoReposicao(es + (cm / 30) * p);
+}
+function calcularPontoReposicaoPorConsumo(
+ estoqueSeg,
+ consumoMensal,
+ consumoDiario,
+ prazoDias,
+) {
+ const mensalPreenchido = String(consumoMensal ?? "").trim() !== "";
+ const diarioPreenchido = String(consumoDiario ?? "").trim() !== "";
+ if (mensalPreenchido && diarioPreenchido) {
+ return {
+ erro: "Informe apenas um tipo de consumo: mensal ou diário.",
+ };
+ }
+ if (!mensalPreenchido && !diarioPreenchido) {
+ return {
+ erro: "Informe o consumo médio mensal ou o consumo médio diário.",
+ };
+ }
+ const valor = mensalPreenchido
+ ? calcularPontoReposicaoMensal(estoqueSeg, consumoMensal, prazoDias)
+ : calcularPontoReposicao(estoqueSeg, consumoDiario, prazoDias);
+ if (valor === "-") {
+ return {
+ erro:
+ "Preencha estoque de segurança, prazo de entrega e o consumo escolhido com valores válidos.",
+ };
+ }
+ return { valor };
+}
+function algumCampoPontoReposicaoFoiPreenchido() {
+ return [ES.value, consumoMes.value, consumo.value, prazoEntrega.value].some(
+ (campo) => String(campo ?? "").trim() !== "",
+ );
+}
+function configurarCamposConsumo() {
+ if (!consumoMes || !consumo) return;
+ consumoMes.addEventListener("input", () => {
+ if (consumoMes.value.trim() !== "") {
+ consumo.value = "";
+ }
+ });
+ consumo.addEventListener("input", () => {
+ if (consumo.value.trim() !== "") {
+ consumoMes.value = "";
+ }
+ });
+}
+configurarCamposConsumo();
 // ============================================================================
 // 4) PAGINAÇÃO GENÉRICA
 // ============================================================================
@@ -718,6 +764,7 @@ function excluirCategoriasSelecionadas() {
 // eventos das categorias
 btnCategoria.addEventListener("click", abrirModalCategorias);
 btnFecharCategoria.addEventListener("click", fecharModalCategorias);
+abrirPopUpCategoria.addEventListener("click", (e) => fecharFora(e, abrirPopUpCategoria));
 formCategorias.addEventListener("submit", (e) => {
  e.preventDefault();
  adicionarCategoria();
@@ -774,11 +821,20 @@ function adicionarLinha(event) {
  "Já existe um produto cadastrado com esse código.";
  return;
  }
- const valorPontoReposicao = calcularPontoReposicao(
+ let valorPontoReposicao = "-";
+ if (algumCampoPontoReposicaoFoiPreenchido()) {
+ const resultadoPontoReposicao = calcularPontoReposicaoPorConsumo(
  ES.value.trim(),
+ consumoMes.value.trim(),
  consumo.value.trim(),
  prazoEntrega.value.trim(),
  );
+ if (resultadoPontoReposicao.erro) {
+ paragrafoErroRegistro.textContent = resultadoPontoReposicao.erro;
+ return;
+ }
+ valorPontoReposicao = resultadoPontoReposicao.valor;
+ }
  produtos.push({
  codigo: valorCodigo,
  nome: valorNome,
@@ -881,89 +937,6 @@ btnLimparFiltro.addEventListener("click", () => {
 });
 filtroOpcoes.addEventListener("change", atualizarVisibilidadeBotoesFiltro);
 atualizarVisibilidadeBotoesFiltro();
-// ============================================================================
-// 10) POP-UP EDITAR PRODUTO
-// ============================================================================
-
-if (
- editar &&
- popUpEditar &&
- btnFecharEditar &&
- formEditar &&
- encontrarPro &&
- btnPesquisarNoEditar &&
- paragrafoInputEditar &&
- divBtn &&
- listaProd
-) {
- editar.addEventListener("click", (e) => {
-  e.preventDefault();
-  abrirModal(popUpEditar);
- });
-
- btnFecharEditar.addEventListener("click", () => fecharModal(popUpEditar));
- popUpEditar.addEventListener("click", (e) => fecharFora(e, popUpEditar));
- formEditar.addEventListener("submit", (e) => e.preventDefault());
-
- function encontrarProdutoEditar() {
-  const valorEncontrarPro = encontrarPro.value.trim().toLowerCase();
-
-  if (valorEncontrarPro === "") {
-   paragrafoInputEditar.textContent =
-    "Por favor, insira um termo de pesquisa.";
-   return;
-  }
-
-  paragrafoInputEditar.textContent = "";
-  listaProd.innerHTML = "";
-  listaProd.classList.remove("aberto");
-  divBtn.classList.remove("aberto");
-
-  let encontrou = false;
-
-  for (let i = 0; i < produtos.length; i++) {
-   const cod = String(produtos[i].codigo ?? "").toLowerCase();
-   const nom = String(produtos[i].nome ?? "").toLowerCase();
-
-   if (valorEncontrarPro === cod || valorEncontrarPro === nom) {
-    encontrou = true;
-
-    const label = document.createElement("label");
-    const input = document.createElement("input");
-    const span = document.createElement("span");
-
-    span.style.cssText =
-     "font-family: Arial, Helvetica, sans-serif; margin-left: 5px; font-weight: 400;";
-
-    input.type = "checkbox";
-    span.textContent =
-     valorEncontrarPro === cod ? produtos[i].codigo : produtos[i].nome;
-
-    label.appendChild(input);
-    label.appendChild(span);
-    listaProd.appendChild(label);
-   }
-  }
-
-  if (encontrou) {
-   listaProd.classList.add("aberto");
-   divBtn.classList.add("aberto");
-  } else {
-   paragrafoInputEditar.textContent = "Produto não encontrado.";
-  }
- }
-
- encontrarPro.addEventListener("keydown", (e) => {
-  if (e.key !== "Enter") return;
-  e.preventDefault();
-  encontrarProdutoEditar();
- });
-
- btnPesquisarNoEditar.addEventListener("click", (event) => {
-  event.preventDefault();
-  encontrarProdutoEditar();
- });
-}
 // ============================================================================
 // 11) POP-UP ORDENS + MODAIS ENTRADA / SAÍDA
 // ============================================================================

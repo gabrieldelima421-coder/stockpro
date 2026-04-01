@@ -126,9 +126,13 @@
  <!-- POP-UP PARA REGISTRO =======================================================-->
  <div class="popup" id="popup">
  <div class="popup-conteudo">
+
  <button class="fechar" id="btn-fechar" type="button">X</button>
+
  <h2>Registrar produto</h2>
+
  <form id="formulario">
+
  <label for="codigo">Código:</label>
  <input
  id="codigo"
@@ -138,6 +142,7 @@
  autocomplete="off"
  required
  />
+
  <label for="nome-produto">Nome:</label>
  <input
  id="nome-produto"
@@ -147,6 +152,7 @@
  autocomplete="off"
  required
  />
+
  <label for="quantidade">Quantidade:</label>
  <input
  id="quantidade"
@@ -157,12 +163,16 @@
  step="1"
  required
  />
+
  <label for="select_categoria">Adicionar as minhas categorias</label>
  <select id="select_categoria" name="select_categoria">
  <option value="" selected disabled>Selecione uma categoria</option>
  </select>
+
  <p id="erro-registro"></p>
+
  <h2>Ponto de Reposição</h2>
+
  <label for="ES">Estoque de Segurança:</label>
  <input
  id="ES"
@@ -172,6 +182,18 @@
  min="0"
  step="1"
  />
+
+<h3>Informe apenas um dos consumos: mensal ou diario.</h3>
+ <label for="consumo-mes">Consumo médio por mes:</label>
+<input id="consumo-mes"
+ name="consumo-mes" 
+ type="number"
+  placeholder="Quantidade média de saídas por mes"
+  min="0"
+  step="1"
+  />
+
+
  <label for="consumo">Consumo médio diário:</label>
  <input
  id="consumo"
@@ -181,6 +203,7 @@
  min="0"
  step="1"
  />
+
  <label for="prazo-entrega">Prazo de entrega (dias):</label>
  <input
  id="prazo-entrega"
@@ -190,7 +213,11 @@
  min="0"
  step="1"
  />
+
  <button type="submit">Salvar</button>
+ 
+ <h2>Editar Registro</h2>
+
  </form>
  </div>
  </div>

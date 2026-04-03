@@ -59,7 +59,7 @@ if (valorSenha !== usuarioEncontrado.senha) {
   msgSenhaErr.textContent = "senha incorreta";
   return;
 }
-window.location.href = "./pagina-inventario/inventario.html";
+window.location.href = "../pagina-inventario/inventario.html";
 }
 
 formLogin.addEventListener("submit", login);

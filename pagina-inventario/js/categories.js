@@ -1,6 +1,18 @@
 "use strict";
 
 (function initializeCategories(app) {
+  function limparPainelCategoria() {
+    app.dom.textoEdCat.replaceChildren();
+  }
+
+  function criarBotaoPainelCategoria({ id, texto }) {
+    const button = document.createElement("button");
+    button.type = "button";
+    button.id = id;
+    button.textContent = texto;
+    return button;
+  }
+
   // Filtra a lista principal de produtos mostrando apenas os itens da categoria clicada.
   function filtrarPorCategoria(categoria) {
     const categoriaNormalizada = String(categoria ?? "").trim().toLowerCase();
@@ -32,23 +44,35 @@
 
     app.state.categoriaSelecionada = null;
     app.state.botaoCategoriaSelecionada = null;
-    app.dom.textoEdCat.innerHTML = "";
+    limparPainelCategoria();
   }
 
   // Monta o painel auxiliar que muda conforme o modo atual: editar, excluir ou neutro.
   function renderPainelEditarCategoria() {
-    if (app.state.modoExclusaoCategoria) {
-      app.dom.textoEdCat.innerHTML = `
-        <p>Selecione uma ou mais categorias abaixo para excluir.</p>
-        <button id="select-todas-cat" type="button">Selecionar tudo</button>
-        <button id="limpar-selecao-cat" type="button">Limpar selecao</button>
-        <button id="confirmar-excluir-cat" type="button">Excluir selecionadas</button>
-      `;
+    limparPainelCategoria();
 
-      const selecionarTudo = document.getElementById("select-todas-cat");
-      const limparSelecao = document.getElementById("limpar-selecao-cat");
-      const confirmarExclusao = document.getElementById(
-        "confirmar-excluir-cat"
+    if (app.state.modoExclusaoCategoria) {
+      const descricao = document.createElement("p");
+      const selecionarTudo = criarBotaoPainelCategoria({
+        id: "select-todas-cat",
+        texto: "Selecionar tudo",
+      });
+      const limparSelecao = criarBotaoPainelCategoria({
+        id: "limpar-selecao-cat",
+        texto: "Limpar selecao",
+      });
+      const confirmarExclusao = criarBotaoPainelCategoria({
+        id: "confirmar-excluir-cat",
+        texto: "Excluir selecionadas",
+      });
+
+      descricao.textContent =
+        "Selecione uma ou mais categorias abaixo para excluir.";
+      app.dom.textoEdCat.append(
+        descricao,
+        selecionarTudo,
+        limparSelecao,
+        confirmarExclusao
       );
 
       selecionarTudo.addEventListener("click", () => {
@@ -76,29 +100,40 @@
     }
 
     if (!app.state.modoEdicaoCategoria) {
-      app.dom.textoEdCat.innerHTML = "";
       return;
     }
 
     if (!app.state.categoriaSelecionada) {
-      app.dom.textoEdCat.innerHTML =
-        "<p>Selecione uma categoria abaixo para renomear.</p>";
+      const descricao = document.createElement("p");
+      descricao.textContent = "Selecione uma categoria abaixo para renomear.";
+      app.dom.textoEdCat.appendChild(descricao);
       return;
     }
 
-    app.dom.textoEdCat.innerHTML = `
-      <p>Categoria selecionada: <strong>${app.state.categoriaSelecionada}</strong></p>
-      <input id="input-renomear-categoria" type="text" placeholder="Novo nome da categoria" autocomplete="off">
-      <button id="btn-salvar-renomear-categoria" type="button">Renomear</button>
-      <button id="btn-cancelar-renomear-categoria" type="button">Cancelar</button>
-    `;
+    const descricao = document.createElement("p");
+    const destaque = document.createElement("strong");
+    const inputRenomear = document.createElement("input");
+    const btnSalvarRenomear = criarBotaoPainelCategoria({
+      id: "btn-salvar-renomear-categoria",
+      texto: "Renomear",
+    });
+    const btnCancelarRenomear = criarBotaoPainelCategoria({
+      id: "btn-cancelar-renomear-categoria",
+      texto: "Cancelar",
+    });
 
-    const inputRenomear = document.getElementById("input-renomear-categoria");
-    const btnSalvarRenomear = document.getElementById(
-      "btn-salvar-renomear-categoria"
-    );
-    const btnCancelarRenomear = document.getElementById(
-      "btn-cancelar-renomear-categoria"
+    destaque.textContent = app.state.categoriaSelecionada;
+    descricao.append("Categoria selecionada: ", destaque);
+    inputRenomear.id = "input-renomear-categoria";
+    inputRenomear.type = "text";
+    inputRenomear.placeholder = "Novo nome da categoria";
+    inputRenomear.autocomplete = "off";
+
+    app.dom.textoEdCat.append(
+      descricao,
+      inputRenomear,
+      btnSalvarRenomear,
+      btnCancelarRenomear
     );
 
     inputRenomear.focus();

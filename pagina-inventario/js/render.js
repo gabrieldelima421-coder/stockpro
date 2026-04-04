@@ -1,28 +1,33 @@
 "use strict";
 
 (function initializeRender(app) {
+  function criarCelulaTabela(valor) {
+    const td = document.createElement("td");
+    td.textContent = String(valor ?? "");
+    return td;
+  }
+
   // Renderiza as linhas da tabela principal com os produtos visiveis na pagina atual.
   function renderProdutos(lista) {
-    app.dom.corpoTabela.innerHTML = "";
+    app.dom.corpoTabela.replaceChildren();
 
     for (let i = 0; i < lista.length; i += 1) {
       const produto = lista[i];
       const tr = document.createElement("tr");
+      const tdCodigo = criarCelulaTabela(produto.codigo);
+      const tdNome = criarCelulaTabela(produto.nome);
+      const tdQuantidade = criarCelulaTabela(produto.quantidade);
+      const tdPontoReposicao = criarCelulaTabela(produto.pontoReposicao ?? "-");
 
-      tr.innerHTML = `
-        <td>${produto.codigo}</td>
-        <td>${produto.nome}</td>
-        <td>${produto.quantidade}</td>
-        <td>${produto.pontoReposicao ?? "-"}</td>
-      `;
+      tr.append(tdCodigo, tdNome, tdQuantidade, tdPontoReposicao);
 
       const qtd = Number(produto.quantidade);
       const pr = Number(produto.pontoReposicao);
 
       if (Number.isFinite(qtd) && Number.isFinite(pr) && qtd < pr) {
-        tr.children[2].classList.add("negativo");
+        tdQuantidade.classList.add("negativo");
       } else {
-        tr.children[2].classList.remove("negativo");
+        tdQuantidade.classList.remove("negativo");
       }
 
       app.dom.corpoTabela.appendChild(tr);
@@ -31,7 +36,7 @@
 
   // Renderiza a tabela de ordens separando visualmente entrada e saida nas colunas corretas.
   function renderOrdens(lista) {
-    app.dom.tabelaCorpoOrdens.innerHTML = "";
+    app.dom.tabelaCorpoOrdens.replaceChildren();
 
     for (let i = 0; i < lista.length; i += 1) {
       const ordem = lista[i];
@@ -40,15 +45,21 @@
       const entradaTxt = ordem.tipo === "entrada" ? ordem.quantidade : "";
       const clienteTxt = ordem.tipo === "saida" ? ordem.pessoa : "";
       const saidaTxt = ordem.tipo === "saida" ? ordem.quantidade : "";
+      const tdCodigo = criarCelulaTabela(ordem.codigoProduto ?? "");
+      const tdProduto = criarCelulaTabela(ordem.produto ?? "");
+      const tdFornecedor = criarCelulaTabela(fornecedorTxt);
+      const tdEntrada = criarCelulaTabela(entradaTxt);
+      const tdCliente = criarCelulaTabela(clienteTxt);
+      const tdSaida = criarCelulaTabela(saidaTxt);
 
-      tr.innerHTML = `
-        <td>${ordem.codigoProduto ?? ""}</td>
-        <td>${ordem.produto ?? ""}</td>
-        <td>${fornecedorTxt}</td>
-        <td>${entradaTxt}</td>
-        <td>${clienteTxt}</td>
-        <td>${saidaTxt}</td>
-      `;
+      tr.append(
+        tdCodigo,
+        tdProduto,
+        tdFornecedor,
+        tdEntrada,
+        tdCliente,
+        tdSaida
+      );
 
       app.dom.tabelaCorpoOrdens.appendChild(tr);
     }
@@ -56,8 +67,13 @@
 
   // Atualiza o select de categorias dentro do formulario de cadastro de produto.
   function renderSelectCategorias() {
-    app.dom.selcionarCategoria.innerHTML =
-      '<option value="" selected disabled>Selecione uma categoria</option>';
+    const optionPadrao = document.createElement("option");
+    optionPadrao.value = "";
+    optionPadrao.selected = true;
+    optionPadrao.disabled = true;
+    optionPadrao.textContent = "Selecione uma categoria";
+
+    app.dom.selcionarCategoria.replaceChildren(optionPadrao);
 
     for (let i = 0; i < app.state.categorias.length; i += 1) {
       const option = document.createElement("option");
@@ -92,7 +108,7 @@
 
   // Renderiza as categorias da pagina atual, alternando entre botoes normais e checkboxes de exclusao.
   function renderCategoriasPagina(listaPagina) {
-    app.dom.listaCategorias.innerHTML = "";
+    app.dom.listaCategorias.replaceChildren();
 
     if (app.state.categorias.length === 0) {
       app.state.modoEdicaoCategoria = false;

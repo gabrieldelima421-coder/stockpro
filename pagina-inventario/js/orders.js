@@ -1,6 +1,7 @@
 "use strict";
 
 (function initializeOrders(app) {
+  // Renderiza a lista de ordens usada no fluxo de editar e remover registros de ordem.
   function renderListaEditarOrdens(itens) {
     app.dom.listaEditarOrdens.innerHTML = "";
 
@@ -36,6 +37,7 @@
     sincronizarBotaoMarcarTudo();
   }
 
+  // Ajusta o botao de marcar tudo conforme a quantidade de checkboxes selecionados.
   function sincronizarBotaoMarcarTudo() {
     const checkboxes = app.dom.listaEditarOrdens.querySelectorAll(
       'input[type="checkbox"]'
@@ -55,6 +57,7 @@
       marcados.length === checkboxes.length ? "Desmarcar Tudo" : "Marcar Tudo";
   }
 
+  // Controla quando o botao de editar deve aparecer e qual ordem esta selecionada.
   function atualizarVisibilidade() {
     const marcados = app.dom.listaEditarOrdens.querySelectorAll(
       'input[type="checkbox"]:checked'
@@ -73,6 +76,7 @@
     sincronizarBotaoMarcarTudo();
   }
 
+  // Limpa as mensagens de erro do formulario de entrada.
   function limparErrosEntrada() {
     app.dom.paragrafoCodigoProduto.textContent = "";
     app.dom.paragrafoNomeProdutoEntrada.textContent = "";
@@ -80,6 +84,7 @@
     app.dom.paragrafoCompraQuantidade.textContent = "";
   }
 
+  // Limpa as mensagens de erro do formulario de saida.
   function limparErrosSaida() {
     app.dom.paragrafoCodigoProdutoSaida.textContent = "";
     app.dom.paragrafoNomeProdutoSaida.textContent = "";
@@ -87,6 +92,7 @@
     app.dom.paragrafoSaidaQuantidade.textContent = "";
   }
 
+  // Limpa as mensagens de erro exibidas dentro do modal de editar ordem.
   function limparErrosEdicaoInterna() {
     app.dom.paraagrafoErro1.textContent = "";
     app.dom.paraagrafoErro2.textContent = "";
@@ -96,6 +102,7 @@
     app.dom.paraagrafoErro6.textContent = "";
   }
 
+  // Valida e registra uma ordem de entrada, atualizando o estoque do produto.
   function adicionarOrdemEntrada(event) {
     event.preventDefault();
 
@@ -161,6 +168,7 @@
     app.modal.fecharModal(app.dom.popUpRegistroOrdens);
   }
 
+  // Valida e registra uma ordem de saida, descontando a quantidade do estoque.
   function adicionarOrdemSaida(event) {
     event.preventDefault();
 
@@ -225,12 +233,14 @@
     app.modal.fecharModal(app.dom.popupSaida);
   }
 
+  // Restaura a tabela principal de ordens com todos os registros existentes.
   function mostrarTudo(event) {
     event.preventDefault();
     app.dom.paragrafoErroBuscar.textContent = "";
     app.state.paginacaoOrdens.setDados(app.state.arrayOrdens);
   }
 
+  // Filtra a tabela principal de ordens pelo texto digitado no campo de busca.
   function pesquisarOrdens() {
     const valor = app.dom.procurarOrdens.value.trim().toLowerCase();
 
@@ -263,6 +273,7 @@
     app.state.paginacaoOrdens.setDados(resultados);
   }
 
+  // Busca ordens para o fluxo de edicao e monta a lista com checkboxes.
   function pesquisarOrdemEditar() {
     const valorPesquisa = app.dom.pesquisarEditarOrdem.value.trim().toLowerCase();
 
@@ -303,6 +314,7 @@
     renderListaEditarOrdens(resultados);
   }
 
+  // Carrega todas as ordens atuais na lista de edicao sem aplicar filtro.
   function exibirLista() {
     app.dom.paragrafoErroEditar.textContent = "";
     renderListaEditarOrdens(
@@ -310,6 +322,7 @@
     );
   }
 
+  // Remove as ordens marcadas e faz o estorno correspondente no estoque dos produtos.
   function removerOrdem() {
     const marcados = app.dom.listaEditarOrdens.querySelectorAll(
       'input[type="checkbox"]:checked'
@@ -392,6 +405,7 @@
     }
   }
 
+  // Abre o modal interno preenchendo os campos com os dados da ordem escolhida.
   function abrirEdicaoDaOrdem(event) {
     event.preventDefault();
 
@@ -420,6 +434,7 @@
     app.modal.abrirModal(app.dom.abrirModalEditarOrdem);
   }
 
+  // Desfaz o efeito de uma ordem antiga no estoque antes de aplicar a edicao.
   function estornarOrdemNoEstoque(ordem) {
     const tipo = String(ordem.tipo ?? "").toLowerCase();
     const codigo = ordem.codigoProduto;
@@ -451,6 +466,7 @@
     return false;
   }
 
+  // Aplica uma ordem no estoque usando as regras do tipo entrada ou saida.
   function aplicarOrdemNoEstoque(ordem) {
     const tipo = String(ordem.tipo ?? "").toLowerCase();
     const codigo = ordem.codigoProduto;
@@ -482,6 +498,7 @@
     return false;
   }
 
+  // Valida a edicao da ordem, estorna a ordem antiga e aplica os novos dados no estoque.
   function salvarOrdemEditada() {
     const codigo = app.dom.inputEditarCodigo.value.trim();
     const produto = app.dom.inputEditarProduto.value.trim();
@@ -577,6 +594,7 @@
     app.modal.fecharModal(app.dom.abrirModalEditarOrdem);
   }
 
+  // Marca ou desmarca todas as ordens da lista de edicao.
   function alternarMarcarTudo() {
     const checkboxes = app.dom.listaEditarOrdens.querySelectorAll(
       'input[type="checkbox"]'
@@ -598,6 +616,7 @@
     atualizarVisibilidade();
   }
 
+  // Liga todos os eventos do modulo de ordens, dos modais e da lista de edicao.
   function bindEvents() {
     app.dom.ordens.addEventListener("click", (event) => {
       event.preventDefault();

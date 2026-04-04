@@ -1,6 +1,7 @@
 "use strict";
 
 (function initializeRender(app) {
+  // Renderiza as linhas da tabela principal com os produtos visiveis na pagina atual.
   function renderProdutos(lista) {
     app.dom.corpoTabela.innerHTML = "";
 
@@ -28,6 +29,7 @@
     }
   }
 
+  // Renderiza a tabela de ordens separando visualmente entrada e saida nas colunas corretas.
   function renderOrdens(lista) {
     app.dom.tabelaCorpoOrdens.innerHTML = "";
 
@@ -52,6 +54,7 @@
     }
   }
 
+  // Atualiza o select de categorias dentro do formulario de cadastro de produto.
   function renderSelectCategorias() {
     app.dom.selcionarCategoria.innerHTML =
       '<option value="" selected disabled>Selecione uma categoria</option>';
@@ -64,6 +67,7 @@
     }
   }
 
+  // Aplica o estilo padrao nos botoes de categoria renderizados na lista.
   function aplicarEstiloBaseCategoria(botao) {
     botao.style.cssText = `
       display: inline-block;
@@ -79,12 +83,14 @@
     `;
   }
 
+  // Destaca a categoria escolhida quando o painel entra em modo de edicao.
   function aplicarEstiloCategoriaSelecionada(botao) {
     botao.style.backgroundColor = "rgb(12, 44, 130)";
     botao.style.outline = "2px solid rgb(255, 208, 0)";
     botao.style.transform = "scale(1.03)";
   }
 
+  // Renderiza as categorias da pagina atual, alternando entre botoes normais e checkboxes de exclusao.
   function renderCategoriasPagina(listaPagina) {
     app.dom.listaCategorias.innerHTML = "";
 

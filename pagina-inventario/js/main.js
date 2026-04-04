@@ -1,6 +1,7 @@
 "use strict";
 
 (function initializeMain(app) {
+  // Cria as tres instancias de paginacao usadas no inventario, ordens e categorias.
   function configurarPaginacoes() {
     app.state.paginacaoInventario = app.pagination.criarPaginacao({
       listaInicial: app.state.produtos,
@@ -46,6 +47,7 @@
     });
   }
 
+  // Faz a inicializacao da aplicacao ligando paginacoes, regras de formulario e eventos.
   function iniciarAplicacao() {
     configurarPaginacoes();
     app.reorder.configurarCamposConsumo();

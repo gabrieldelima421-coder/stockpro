@@ -276,6 +276,56 @@ td.negativo {
  display: flex;
  flex-direction: column;
 } /* botão X */
+#popup-edt-reg .popup-conteudo {
+ gap: 12px;
+ max-width: 520px;
+}
+.popup-acoes {
+ display: flex;
+ gap: 12px;
+ flex-wrap: wrap;
+ margin-top: 4px;
+}
+#lista-edt {
+ display: flex;
+ flex-direction: column;
+ gap: 8px;
+ width: 100%;
+}
+.lista-edt-item {
+ width: 100%;
+ padding: 12px 14px;
+ text-align: left;
+ text-transform: none;
+ letter-spacing: 0;
+ text-shadow: none;
+ color: #111;
+ background: #f6f8ff;
+ border: 1px solid rgba(52, 89, 210, 0.28);
+}
+.lista-edt-item.selecionado {
+ color: #fff;
+ background: linear-gradient(to bottom, rgb(3, 15, 244), rgb(52, 89, 210), rgb(107, 111, 187));
+ border-color: rgba(5, 23, 128, 0.5);
+}
+#edt-reg {
+ display: flex;
+ flex-direction: column;
+ gap: 12px;
+ width: 100%;
+ margin-top: 12px;
+ padding: 18px 20px;
+ border-radius: 12px;
+ background: rgba(246, 248, 255, 0.95);
+ border: 1px solid rgba(52, 89, 210, 0.18);
+ box-sizing: border-box;
+}
+#erro-salvar-edt-reg,
+#errBuscaEdtReg {
+ margin: 0;
+ color: #b00020;
+ font-family: Arial, Helvetica, sans-serif;
+}
 .fechar {
  position: sticky;
  top: 8px;

@@ -17,10 +17,12 @@
  >
  <button id="button_legenda" type="button" disabled></button>
  </div>
- <!--======================= BOTÕES ============================-->
+
+ <!--*======================= BOTÕES ============================-->
  <div class="botoes">
  <button id="categoria" type="button">Categorias</button>
  <button id="registro" type="button">Registrar</button>
+ <button type="button" id="editar-re">Editar Registro</button>
  <button id="ordens" type="button">Ordens</button>
  </div>
  <h2
@@ -36,7 +38,8 @@
  >
  INVENTÁRIO
  </h2>
- <!--==============================================================================-->
+
+ <!--*==============================================================================-->
  <div class="tabela">
  <div class="controles-tabela">
  <div class="filtro">
@@ -59,7 +62,8 @@
  <button id="aplicar_filtro" type="button" hidden>Aplicar filtro</button>
  <button id="limpar_filtro" type="button" hidden>Limpar filtro</button>
  </div>
- <!--=======================================================================================-->
+
+ <!--*=======================================================================================-->
  <div class="barra-busca">
  <label for="buscar">Procurar:</label>
  <input
@@ -83,16 +87,19 @@
  </thead>
  <tbody id="corpo-tabela"></tbody>
  </table>
- <!--=====================================================================================-->
+
+ <!--*=====================================================================================-->
  <div class="controles-paginacao">
  <button type="button" id="inicio-inventario" hidden>Início</button>
  <button type="button" id="voltar-inventario" hidden>Voltar</button>
  <button type="button" id="proximo-inventario" hidden>Próximo</button>
  <button type="button" id="ultimo-inventario" hidden>Último</button>
  </div>
- <!--=============================================================================================-->
+ 
+ <!--*=============================================================================================-->
  </div>
- <!--POP-UP CATEGORIAS====================================================================-->
+
+ <!--?POP-UP CATEGORIAS====================================================================-->
  <div class="popup-categorias" id="popup-categorias">
  <div class="popup-categorias-conteudo">
  <button id="btn-fechar-categorias" type="button">X</button>
@@ -123,7 +130,8 @@
  </div>
  </div>
  </div>
- <!-- POP-UP PARA REGISTRO =======================================================-->
+
+ <!-- ? POP-UP PARA REGISTRO =======================================================-->
  <div class="popup" id="popup">
  <div class="popup-conteudo">
 
@@ -215,21 +223,121 @@
  />
 
  <button type="submit">Salvar</button>
- 
- <h2>Editar Registro</h2>
-<label for="procurar-edit">Procurar</label>
-<input
-id="procurar-edit"
- type="text"
-placeholder="codigo, nome"
-autocomplete="off"
-/>
-
-
  </form>
  </div>
  </div>
- <!-- POP-UP DE ORDENS====================================================== -->
+
+
+<!-- ? EDITAR REGISTRO=====================================-->
+
+
+ <div class="popup" id="popup-edt-reg">
+ <div class="popup-conteudo">
+ <button class="fechar" id="btn-fechar-edt-reg" type="button">X</button>
+ <h2>Editar registro</h2>
+ <label for="procurar-edit">Procurar Registro:</label>
+
+ <input
+ id="procurar-edit"
+ type="text"
+ placeholder="codigo, nome"
+ autocomplete="off"
+ />
+
+ <p id="errBuscaEdtReg"></p>
+
+ <div class="popup-acoes">
+ <button id="btn-editar-registro-item" type="button" hidden>Editar</button>
+ <button id="excluir-reg" type="button">Excluir Registro</button>
+ 
+ <!--*lista vem aqui-->
+
+ <div id="lista-edt">
+
+ </div>
+<!--*painel para editar-->
+
+<div id="edt-reg" hidden>
+<label for="novo-cod">Codigo:</label>
+<input
+id="novo-cod"
+type="text"
+name="novo-cod"
+placeholder="digite novo codigo"
+/>
+
+<label for="novo-nome">Nome:</label>
+<input
+id="novo-nome"
+type="text"
+name="novo-nome"
+placeholder="digite o novo nome do produto"
+/>
+
+<label for="nova-qtd">Quantidade</label>
+<input
+id="nova-qtd"
+type="number"
+name="nova-qtd"
+placeholder="digite a quantidade"
+min="0"
+step="1"
+required
+/>
+
+<h3>Ponto de Reposiçao</h3>
+
+<label>Estoque de Segurança</label>
+<input
+id="novo-pt-rep"
+type="number"
+name="novo-pt-rep"
+placeholder="quantidade minima para nao faltar em estoque"
+min="0"
+step="1" 
+/>
+
+<h3>Informe apenas um dos consumos: mensal ou diario.</h3>
+ <label for="novo-consumo-mes">Consumo médio por mes:</label>
+<input id="novo-consumo-mes"
+ name="novo-consumo-mes" 
+ type="number"
+  placeholder="Quantidade média de saídas por mes"
+  min="0"
+  step="1"
+  />
+
+
+ <label for="novo-consumo-diario">Consumo médio diário:</label>
+ <input
+ id="novo-consumo-diario"
+ name="novo-consumo-diario"
+ type="number"
+ placeholder="Quantidade média de saídas por dia"
+ min="0"
+ step="1"
+ />
+
+ <label for="novo-prazo-entrega">Prazo de entrega (dias):</label>
+ <input
+ id="novo-prazo-entrega"
+ name="novo-prazo-entrega"
+ type="number"
+ placeholder="Dias para o produto chegar do pedido à entrega"
+ min="0"
+ step="1"
+ />
+
+ <p id="erro-salvar-edt-reg"></p>
+ <button id="salvar-edt-reg" type="button">Salvar</button>
+
+</div>
+ </div>
+ </div>
+ </div>
+
+
+ <!--? POP-UP DE ORDENS====================================================== -->
  <div class="popup_ordens" id="popup_ordens">
  <div class="popup_ordens_conteudo">
  <button id="btnFechar_ordens" type="button">X</button>
@@ -249,7 +357,8 @@ autocomplete="off"
  <button id="saida_venda" type="button">Saída/Venda</button>
  <button id="btn_editar_ordem" type="button">Editar Ordens</button>
  </div>
- <!-- MODAL ENTRADA -->
+
+ <!--?===================== MODAL ENTRADA =====================-->
  <div id="popup_compra_entrada_saida_venda" class="ligar_Input">
  <div class="ligar_Input_conteudo">
  <form id="form-ordem-entrada">
@@ -291,7 +400,7 @@ autocomplete="off"
  </form>
  </div>
  </div>
- <!-- MODAL SAÍDA -->
+ <!-- ? =========================MODAL SAÍDA =============-->
  <div id="popup_saida_venda" class="ligar_Input_saidaVenda">
  <div class="ligar_Input_saidaVenda_conteudo">
  <form id="form-ordem-saida">
@@ -328,7 +437,8 @@ autocomplete="off"
  </form>
  </div>
  </div>
- <!-- Modal Editar Ordem -->
+
+ <!--? =================== Modal Editar Ordem =====================-->
  <div class="editar_ordem" id="editar_ordem">
  <div class="editar_ordens_conteudo">
  <button id="btn_fechar_editar_ordem" type="button">X</button>

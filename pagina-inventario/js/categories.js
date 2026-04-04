@@ -1,6 +1,7 @@
 "use strict";
 
 (function initializeCategories(app) {
+  // Filtra a lista principal de produtos mostrando apenas os itens da categoria clicada.
   function filtrarPorCategoria(categoria) {
     const categoriaNormalizada = String(categoria ?? "").trim().toLowerCase();
     const resultados = app.state.produtos.filter((produto) => {
@@ -13,14 +14,17 @@
     app.state.paginacaoInventario.setDados(resultados);
   }
 
+  // Abre o modal de categorias a partir do menu principal.
   function abrirModalCategorias() {
     app.modal.abrirModal(app.dom.abrirPopUpCategoria);
   }
 
+  // Fecha o modal de categorias.
   function fecharModalCategorias() {
     app.modal.fecharModal(app.dom.abrirPopUpCategoria);
   }
 
+  // Limpa a selecao visual e o estado interno da categoria em edicao.
   function limparSelecaoCategoria() {
     if (app.state.botaoCategoriaSelecionada) {
       app.render.aplicarEstiloBaseCategoria(app.state.botaoCategoriaSelecionada);
@@ -31,6 +35,7 @@
     app.dom.textoEdCat.innerHTML = "";
   }
 
+  // Monta o painel auxiliar que muda conforme o modo atual: editar, excluir ou neutro.
   function renderPainelEditarCategoria() {
     if (app.state.modoExclusaoCategoria) {
       app.dom.textoEdCat.innerHTML = `
@@ -110,6 +115,7 @@
     });
   }
 
+  // Valida e adiciona uma nova categoria ao estado principal da aplicacao.
   function adicionarCategoria() {
     const valorCategoria = app.dom.inputCategoria.value.trim().toLowerCase();
     app.dom.paragrafoErroCate.textContent = "";
@@ -130,6 +136,7 @@
     renderPainelEditarCategoria();
   }
 
+  // Marca uma categoria como alvo da renomeacao e atualiza o destaque visual.
   function selecionarCategoriaParaEditar(botao) {
     const nomeCategoria = botao.dataset.categoria;
 
@@ -143,6 +150,7 @@
     renderPainelEditarCategoria();
   }
 
+  // Alterna o painel entre modo normal e modo de edicao de categorias.
   function editarCat(event) {
     event.preventDefault();
 
@@ -165,6 +173,7 @@
     renderPainelEditarCategoria();
   }
 
+  // Renomeia a categoria selecionada e sincroniza os produtos que usam essa categoria.
   function renomearCategoriaSelecionada() {
     app.dom.paragrafoErroCate.textContent = "";
 
@@ -225,6 +234,7 @@
       "Categoria renomeada com sucesso.";
   }
 
+  // Alterna o painel para o modo de exclusao em lote de categorias.
   function abrirEdEx(event) {
     event.preventDefault();
     app.dom.paragrafoErroCate.textContent = "";
@@ -244,6 +254,7 @@
     renderPainelEditarCategoria();
   }
 
+  // Remove uma categoria especifica e limpa essa categoria dos produtos vinculados.
   function excluirCat(id) {
     const indiceCategoria = app.state.categorias.findIndex((categoria) => {
       return categoria.id === id;
@@ -267,6 +278,7 @@
     return true;
   }
 
+  // Remove todas as categorias marcadas no modo de exclusao em lote.
   function excluirCategoriasSelecionadas() {
     const marcadas = app.dom.listaCategorias.querySelectorAll(
       'input[type="checkbox"]:checked'
@@ -305,6 +317,7 @@
       removidas + " categoria(s) removida(s) com sucesso.";
   }
 
+  // Liga todos os eventos do modulo de categorias ao DOM.
   function bindEvents() {
     app.dom.btnCategoria.addEventListener("click", abrirModalCategorias);
     app.dom.btnFecharCategoria.addEventListener("click", fecharModalCategorias);

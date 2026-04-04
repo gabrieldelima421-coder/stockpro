@@ -3,20 +3,24 @@
 (function initializePagination(app) {
   const LIMITE_ITENS_POR_PAGINA = 20;
 
+  // Cria uma paginacao reutilizavel para qualquer lista que precise renderizar por paginas.
   function criarPaginacao({ listaInicial = [], limite = 20, render, botoes }) {
     let lista = Array.isArray(listaInicial) ? [...listaInicial] : [];
     let paginaAtual = 1;
 
+    // Calcula quantas paginas existem com base na quantidade de itens atual.
     function getTotalPaginas() {
       return Math.max(1, Math.ceil(lista.length / limite));
     }
 
+    // Recorta apenas os itens que pertencem a pagina atual.
     function getItensPaginaAtual() {
       const inicio = (paginaAtual - 1) * limite;
       const fim = inicio + limite;
       return lista.slice(inicio, fim);
     }
 
+    // Exibe ou oculta os botoes de navegacao conforme a pagina atual.
     function atualizarBotoes() {
       const totalPaginas = getTotalPaginas();
       const temMaisDeUmaPagina = totalPaginas > 1;
@@ -40,6 +44,7 @@
       }
     }
 
+    // Chama a renderizacao da pagina atual e sincroniza a navegacao visual.
     function renderizar() {
       const totalPaginas = getTotalPaginas();
 
@@ -57,12 +62,14 @@
       atualizarBotoes();
     }
 
+    // Substitui a lista inteira da paginacao e reinicia na primeira pagina.
     function setDados(novaLista) {
       lista = Array.isArray(novaLista) ? [...novaLista] : [];
       paginaAtual = 1;
       renderizar();
     }
 
+    // Avanca uma pagina quando ainda existe proxima pagina.
     function proxima() {
       if (paginaAtual < getTotalPaginas()) {
         paginaAtual += 1;
@@ -70,6 +77,7 @@
       }
     }
 
+    // Volta uma pagina quando ainda nao estamos no inicio.
     function voltar() {
       if (paginaAtual > 1) {
         paginaAtual -= 1;
@@ -77,11 +85,13 @@
       }
     }
 
+    // Leva a visualizacao para a primeira pagina da lista.
     function irParaInicio() {
       paginaAtual = 1;
       renderizar();
     }
 
+    // Leva a visualizacao para a ultima pagina disponivel.
     function irParaUltima() {
       paginaAtual = getTotalPaginas();
       renderizar();

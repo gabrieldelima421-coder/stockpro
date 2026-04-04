@@ -1,6 +1,7 @@
 "use strict";
 
 (function initializeReorder(app) {
+  // Calcula o ponto de reposicao com base em estoque de seguranca, consumo diario e prazo de entrega.
   function calcularPontoReposicao(estoqueSeg, consMedio, prazo) {
     const es = Number(estoqueSeg);
     const consumo = Number(consMedio);
@@ -13,6 +14,7 @@
     return app.utils.arredondarPontoReposicao(es + consumo * prazoDias);
   }
 
+  // Calcula o ponto de reposicao quando o consumo informado eh mensal e precisa ser convertido para diario.
   function calcularPontoReposicaoMensal(
     estoqueSeg,
     consMedioMensal,
@@ -29,6 +31,7 @@
     return app.utils.arredondarPontoReposicao(es + (consumoMensal / 30) * prazo);
   }
 
+  // Decide qual formula usar de acordo com o tipo de consumo preenchido no formulario.
   function calcularPontoReposicaoPorConsumo(
     estoqueSeg,
     consumoMensal,
@@ -62,6 +65,7 @@
     return { valor };
   }
 
+  // Verifica se algum dos campos do calculo foi preenchido antes de tentar calcular o ponto de reposicao.
   function algumCampoPontoReposicaoFoiPreenchido() {
     return [
       app.dom.ES.value,
@@ -71,6 +75,7 @@
     ].some((campo) => String(campo ?? "").trim() !== "");
   }
 
+  // Mantem os campos de consumo mensal e diario mutuamente exclusivos para evitar calculo ambigo.
   function configurarCamposConsumo() {
     if (!app.dom.consumoMes || !app.dom.consumo) return;
 

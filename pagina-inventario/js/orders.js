@@ -80,16 +80,18 @@
   function limparErrosEntrada() {
     app.dom.paragrafoCodigoProduto.textContent = "";
     app.dom.paragrafoNomeProdutoEntrada.textContent = "";
-    app.dom.paragrafoFornecedor.textContent = "";
-    app.dom.paragrafoCompraQuantidade.textContent = "";
+    app.dom.paragrafoFornecedorEntrada.textContent = "";
+    app.dom.paragrafoQuantidadeEntrada.textContent = "";
+    app.dom.paragrafoErroDataCompra.textContent = "";
   }
 
   // Limpa as mensagens de erro do formulario de saida.
   function limparErrosSaida() {
     app.dom.paragrafoCodigoProdutoSaida.textContent = "";
     app.dom.paragrafoNomeProdutoSaida.textContent = "";
-    app.dom.paragrafoCliente.textContent = "";
-    app.dom.paragrafoSaidaQuantidade.textContent = "";
+    app.dom.paragrafoClienteSaida.textContent = "";
+    app.dom.paragrafoQuantidadeSaida.textContent = "";
+    app.dom.paragrafoErroDataSaida.textContent = "";
   }
 
   // Limpa as mensagens de erro exibidas dentro do modal de editar ordem.
@@ -102,69 +104,311 @@
     app.dom.paraagrafoErro6.textContent = "";
   }
 
+  // Confere se codigo e nome apontam para o mesmo produto ja cadastrado.
+  function validarProdutoRegistrado(codigoInformado, nomeInformado) {
+    const achado = app.utils.acharProdutoPorCodigo(codigoInformado);
+
+    if (!achado) {
+      return {
+        valido: false,
+        erro: "codigo_inexistente",
+        produto: null,
+      };
+    }
+
+    const nomeCadastrado = String(achado.produto.nome ?? "").trim().toLowerCase();
+    const nomeDigitado = String(nomeInformado ?? "").trim().toLowerCase();
+
+    if (nomeCadastrado !== nomeDigitado) {
+      return {
+        valido: false,
+        erro: "nome_nao_confere",
+        produto: achado.produto,
+      };
+    }
+
+    return {
+      valido: true,
+      erro: "",
+      produto: achado.produto,
+    };
+  }
+
+  function limparSugestoes(container) {
+    if (!container) return;
+    container.innerHTML = "";
+    container.hidden = true;
+  }
+
+  function limparTodasSugestoesOrdens() {
+    limparSugestoes(app.dom.listaSugestoes1);
+    limparSugestoes(app.dom.listaSugestoes2);
+    limparSugestoes(app.dom.listaSugestoes3);
+    limparSugestoes(app.dom.listaSugestoes4);
+  }
+
+  function preencherCodigoProdutoEntrada(produto) {
+    app.dom.codigoProdutoEntrada.value = String(produto.codigo ?? "");
+    limparSugestoes(app.dom.listaSugestoes1);
+  }
+
+  function preencherNomeProdutoEntrada(produto) {
+    app.dom.nomeProdutoEntrada.value = String(produto.nome ?? "");
+    limparSugestoes(app.dom.listaSugestoes2);
+  }
+
+  function preencherCodigoProdutoSaida(produto) {
+    app.dom.codigoProdutoSaida.value = String(produto.codigo ?? "");
+    limparSugestoes(app.dom.listaSugestoes3);
+  }
+
+  function preencherNomeProdutoSaida(produto) {
+    app.dom.nomeProdutoSaida.value = String(produto.nome ?? "");
+    limparSugestoes(app.dom.listaSugestoes4);
+  }
+
+  function criarItemSugestaoProduto(texto, aoSelecionar) {
+    const botao = document.createElement("button");
+    const conteudo = document.createElement("span");
+
+    botao.type = "button";
+    botao.className = "item-sugestao-produto";
+    conteudo.className = "item-sugestao-texto";
+    conteudo.textContent = texto;
+
+    botao.addEventListener("mousedown", (event) => {
+      event.preventDefault();
+      aoSelecionar();
+    });
+
+    botao.append(conteudo);
+    return botao;
+  }
+
+  function renderizarSugestoesProduto(
+    container,
+    produtos,
+    obterTexto,
+    aoSelecionar
+  ) {
+    limparSugestoes(container);
+
+    if (!container) return;
+
+    if (produtos.length === 0) {
+      const vazio = document.createElement("div");
+      vazio.className = "item-sugestao-vazia";
+      vazio.textContent =
+        app.state.produtos.length === 0
+          ? "Nenhum produto cadastrado."
+          : "Nenhum produto encontrado.";
+      container.appendChild(vazio);
+      container.hidden = false;
+      return;
+    }
+
+    const fragment = document.createDocumentFragment();
+
+    for (let i = 0; i < produtos.length; i += 1) {
+      const produto = produtos[i];
+      fragment.appendChild(
+        criarItemSugestaoProduto(obterTexto(produto), () => aoSelecionar(produto))
+      );
+    }
+
+    container.appendChild(fragment);
+    container.hidden = false;
+  }
+
+  function atualizarSugestoesCodigoEntrada() {
+    const produtos = app.state.produtos;
+    const codigoProdutoEntrada = app.dom.codigoProdutoEntrada.value.trim();
+
+    limparSugestoes(app.dom.listaSugestoes2);
+    if (!codigoProdutoEntrada) {
+      limparSugestoes(app.dom.listaSugestoes1);
+      return;
+    }
+
+    const autoCompleteCod = produtos.filter((p) =>
+      String(p.codigo ?? "").toLowerCase().trim().startsWith(
+        codigoProdutoEntrada.toLowerCase().trim()
+      )
+    );
+
+    renderizarSugestoesProduto(
+      app.dom.listaSugestoes1,
+      autoCompleteCod,
+      (produto) => String(produto.codigo ?? ""),
+      preencherCodigoProdutoEntrada
+    );
+  }
+
+  function atualizarSugestoesNomeEntrada() {
+    const produtos = app.state.produtos;
+    const nomeProdutoEntrada = app.dom.nomeProdutoEntrada.value.trim();
+
+    limparSugestoes(app.dom.listaSugestoes1);
+    if (!nomeProdutoEntrada) {
+      limparSugestoes(app.dom.listaSugestoes2);
+      return;
+    }
+
+    const autoCompleteNome = produtos.filter((p) =>
+      String(p.nome ?? "").toLowerCase().trim().startsWith(
+        nomeProdutoEntrada.toLowerCase().trim()
+      )
+    );
+
+    renderizarSugestoesProduto(
+      app.dom.listaSugestoes2,
+      autoCompleteNome,
+      (produto) => String(produto.nome ?? ""),
+      preencherNomeProdutoEntrada
+    );
+  }
+
+  function atualizarSugestoesCodigoSaida() {
+    const produtos = app.state.produtos;
+    const codigoProdutoSaida = app.dom.codigoProdutoSaida.value.trim();
+
+    limparSugestoes(app.dom.listaSugestoes4);
+    if (!codigoProdutoSaida) {
+      limparSugestoes(app.dom.listaSugestoes3);
+      return;
+    }
+
+    const autoCompleteCod = produtos.filter((p) =>
+      String(p.codigo ?? "").toLowerCase().trim().startsWith(
+        codigoProdutoSaida.toLowerCase().trim()
+      )
+    );
+
+    renderizarSugestoesProduto(
+      app.dom.listaSugestoes3,
+      autoCompleteCod,
+      (produto) => String(produto.codigo ?? ""),
+      preencherCodigoProdutoSaida
+    );
+  }
+
+  function atualizarSugestoesNomeSaida() {
+    const produtos = app.state.produtos;
+    const nomeProdutoSaida = app.dom.nomeProdutoSaida.value.trim();
+
+    limparSugestoes(app.dom.listaSugestoes3);
+    if (!nomeProdutoSaida) {
+      limparSugestoes(app.dom.listaSugestoes4);
+      return;
+    }
+
+    const autoCompleteNome = produtos.filter((p) =>
+      String(p.nome ?? "").toLowerCase().trim().startsWith(
+        nomeProdutoSaida.toLowerCase().trim()
+      )
+    );
+
+    renderizarSugestoesProduto(
+      app.dom.listaSugestoes4,
+      autoCompleteNome,
+      (produto) => String(produto.nome ?? ""),
+      preencherNomeProdutoSaida
+    );
+  }
+
+  function registrarFechamentoPorBlur(input, container) {
+    input.addEventListener("blur", () => {
+      window.setTimeout(() => {
+        if (container.contains(document.activeElement)) return;
+        limparSugestoes(container);
+      }, 120);
+    });
+  }
+
   // Valida e registra uma ordem de entrada, atualizando o estoque do produto.
   function adicionarOrdemEntrada(event) {
     event.preventDefault();
 
-    const valorProdutoEntrada = app.dom.produtoNomeEntrada.value.trim();
-    const valorProdutoFornecedor = app.dom.produtoFornecedor.value.trim();
-    const valorFornecedor = app.dom.fornecedor.value.trim();
-    const quantidadeTexto = app.dom.inserirOredemEntrada.value.trim();
-    const quantidade = Number(quantidadeTexto);
+    const nomeProdutoEntrada = app.dom.nomeProdutoEntrada.value.trim();
+    const codigoProdutoEntrada = app.dom.codigoProdutoEntrada.value.trim();
+    const fornecedorEntrada = app.dom.fornecedorEntrada.value.trim();
+    const quantidadeTextoEntrada = app.dom.quantidadeEntrada.value.trim();
+    const quantidadeEntrada = Number(quantidadeTextoEntrada);
+    const dataCompra = app.dom.dataCompra.value;
 
     limparErrosEntrada();
 
-    if (valorProdutoFornecedor === "") {
+    if (codigoProdutoEntrada === "") {
       app.dom.paragrafoCodigoProduto.textContent =
         "Por favor, insira o codigo do produto.";
       return;
     }
 
-    if (valorProdutoEntrada === "") {
+    if (nomeProdutoEntrada === "") {
       app.dom.paragrafoNomeProdutoEntrada.textContent =
         "Por favor, insira o nome do produto.";
       return;
     }
 
-    if (valorFornecedor === "") {
-      app.dom.paragrafoFornecedor.textContent =
+    if (fornecedorEntrada === "") {
+      app.dom.paragrafoFornecedorEntrada.textContent =
         "Por favor, insira o fornecedor.";
       return;
     }
 
-    if (!Number.isInteger(quantidade) || quantidade <= 0) {
-      app.dom.paragrafoCompraQuantidade.textContent =
+    if (dataCompra === "") {
+      app.dom.paragrafoErroDataCompra.textContent =
+        "insira uma data de compra";
+      return;
+    }
+
+    if (!Number.isInteger(quantidadeEntrada) || quantidadeEntrada <= 0) {
+      app.dom.paragrafoQuantidadeEntrada.textContent =
         "Quantidade invalida. Use um inteiro maior que 0.";
       return;
     }
 
-    if (!app.utils.acharProdutoPorCodigo(valorProdutoFornecedor)) {
+    const validacaoProdutoEntrada = validarProdutoRegistrado(
+      codigoProdutoEntrada,
+      nomeProdutoEntrada
+    );
+
+    if (validacaoProdutoEntrada.erro === "codigo_inexistente") {
       app.dom.paragrafoCodigoProduto.textContent =
         "Esse codigo nao existe no inventario. Registre o produto primeiro.";
       return;
     }
 
+    if (validacaoProdutoEntrada.erro === "nome_nao_confere") {
+      app.dom.paragrafoNomeProdutoEntrada.textContent =
+        'O nome informado nao corresponde ao codigo cadastrado.';
+      return;
+    }
+
     const atualizou = app.inventory.atualizarInventarioComOrdemEntrada(
-      valorProdutoFornecedor,
-      quantidade
+      codigoProdutoEntrada,
+      quantidadeEntrada
     );
 
     if (!atualizou) {
-      app.dom.paragrafoCompraQuantidade.textContent =
+      app.dom.paragrafoQuantidadeEntrada.textContent =
         "Nao foi possivel atualizar o inventario.";
       return;
     }
 
     app.state.arrayOrdens.push({
-      codigoProduto: valorProdutoFornecedor,
-      produto: valorProdutoEntrada,
+      codigoProduto: codigoProdutoEntrada,
+      produto: validacaoProdutoEntrada.produto.nome,
       tipo: "entrada",
-      pessoa: valorFornecedor,
-      quantidade,
+      pessoa: fornecedorEntrada,
+      quantidade: quantidadeEntrada,
+      data: dataCompra
     });
 
     app.state.paginacaoOrdens.setDados(app.state.arrayOrdens);
     app.dom.formOrdemE.reset();
+    limparSugestoes(app.dom.listaSugestoes1);
+    limparSugestoes(app.dom.listaSugestoes2);
     app.modal.fecharModal(app.dom.popUpRegistroOrdens);
   }
 
@@ -172,64 +416,84 @@
   function adicionarOrdemSaida(event) {
     event.preventDefault();
 
-    const valorProdutoSaida = app.dom.produtoNomeSaida.value.trim();
-    const valorProdutoCliente = app.dom.produtoCliente.value.trim();
-    const valorCliente = app.dom.cliente.value.trim();
-    const quantidadeTexto = app.dom.inserirOredemSaida.value.trim();
-    const quantidade = Number(quantidadeTexto);
-
+    const nomeProdutoSaida = app.dom.nomeProdutoSaida.value.trim();
+    const codigoProdutoSaida = app.dom.codigoProdutoSaida.value.trim();
+    const clienteSaida = app.dom.clienteSaida.value.trim();
+    const quantidadeTextoSaida = app.dom.quantidadeSaida.value.trim();
+    const quantidadeSaida = Number(quantidadeTextoSaida);
+    const dataSaida = app.dom.dataSaida.value;
     limparErrosSaida();
 
-    if (valorProdutoCliente === "") {
+    if (codigoProdutoSaida === "") {
       app.dom.paragrafoCodigoProdutoSaida.textContent =
         "Por favor, insira o codigo do produto.";
       return;
     }
 
-    if (valorProdutoSaida === "") {
+    if (nomeProdutoSaida === "") {
       app.dom.paragrafoNomeProdutoSaida.textContent =
         "Por favor, insira o nome do produto.";
       return;
     }
 
-    if (valorCliente === "") {
-      app.dom.paragrafoCliente.textContent = "Por favor, insira o cliente.";
+    if (clienteSaida === "") {
+      app.dom.paragrafoClienteSaida.textContent = "Por favor, insira o cliente.";
       return;
     }
 
-    if (!Number.isInteger(quantidade) || quantidade <= 0) {
-      app.dom.paragrafoSaidaQuantidade.textContent =
+    if (dataSaida === "") {
+      app.dom.paragrafoErroDataSaida.textContent =
+        "insira uma data de venda";
+      return;
+    }
+
+    if (!Number.isInteger(quantidadeSaida) || quantidadeSaida <= 0) {
+      app.dom.paragrafoQuantidadeSaida.textContent =
         "Quantidade invalida. Use um inteiro maior que 0.";
       return;
     }
 
-    if (!app.utils.acharProdutoPorCodigo(valorProdutoCliente)) {
+    const validacaoProdutoSaida = validarProdutoRegistrado(
+      codigoProdutoSaida,
+      nomeProdutoSaida
+    );
+
+    if (validacaoProdutoSaida.erro === "codigo_inexistente") {
       app.dom.paragrafoCodigoProdutoSaida.textContent =
         "Esse codigo nao existe no inventario. Registre o produto primeiro.";
       return;
     }
 
+    if (validacaoProdutoSaida.erro === "nome_nao_confere") {
+      app.dom.paragrafoNomeProdutoSaida.textContent =
+        "O nome informado nao corresponde ao codigo cadastrado.";
+      return;
+    }
+
     const atualizou = app.inventory.atualizarInventarioComOrdemSaida(
-      valorProdutoCliente,
-      quantidade
+      codigoProdutoSaida,
+      quantidadeSaida
     );
 
     if (!atualizou) {
-      app.dom.paragrafoSaidaQuantidade.textContent =
+      app.dom.paragrafoQuantidadeSaida.textContent =
         "Estoque insuficiente ou nao foi possivel atualizar.";
       return;
     }
 
     app.state.arrayOrdens.push({
-      codigoProduto: valorProdutoCliente,
-      produto: valorProdutoSaida,
+      codigoProduto: codigoProdutoSaida,
+      produto: validacaoProdutoSaida.produto.nome,
       tipo: "saida",
-      pessoa: valorCliente,
-      quantidade,
+      pessoa: clienteSaida,
+      quantidade: quantidadeSaida,
+      data: dataSaida
     });
 
     app.state.paginacaoOrdens.setDados(app.state.arrayOrdens);
     app.dom.formOrdemS.reset();
+    limparSugestoes(app.dom.listaSugestoes3);
+    limparSugestoes(app.dom.listaSugestoes4);
     app.modal.fecharModal(app.dom.popupSaida);
   }
 
@@ -630,24 +894,52 @@
     });
     app.dom.btnCompraEntrada.addEventListener("click", (event) => {
       event.preventDefault();
+      limparSugestoes(app.dom.listaSugestoes1);
+      limparSugestoes(app.dom.listaSugestoes2);
       app.modal.abrirModal(app.dom.popUpRegistroOrdens);
     });
     app.dom.btnFecharOrdem2.addEventListener("click", () => {
+      limparSugestoes(app.dom.listaSugestoes1);
+      limparSugestoes(app.dom.listaSugestoes2);
       app.modal.fecharModal(app.dom.popUpRegistroOrdens);
     });
     app.dom.popUpRegistroOrdens.addEventListener("click", (event) => {
+      if (event.target === app.dom.popUpRegistroOrdens) {
+        limparSugestoes(app.dom.listaSugestoes1);
+        limparSugestoes(app.dom.listaSugestoes2);
+      }
       app.modal.fecharFora(event, app.dom.popUpRegistroOrdens);
     });
     app.dom.btnSaidaVenda.addEventListener("click", (event) => {
       event.preventDefault();
+      limparSugestoes(app.dom.listaSugestoes3);
+      limparSugestoes(app.dom.listaSugestoes4);
       app.modal.abrirModal(app.dom.popupSaida);
     });
     app.dom.btnFecharOrdem3.addEventListener("click", () => {
+      limparSugestoes(app.dom.listaSugestoes3);
+      limparSugestoes(app.dom.listaSugestoes4);
       app.modal.fecharModal(app.dom.popupSaida);
     });
     app.dom.popupSaida.addEventListener("click", (event) => {
+      if (event.target === app.dom.popupSaida) {
+        limparSugestoes(app.dom.listaSugestoes3);
+        limparSugestoes(app.dom.listaSugestoes4);
+      }
       app.modal.fecharFora(event, app.dom.popupSaida);
     });
+    app.dom.codigoProdutoEntrada.addEventListener("input", atualizarSugestoesCodigoEntrada);
+    app.dom.codigoProdutoEntrada.addEventListener("focus", atualizarSugestoesCodigoEntrada);
+    app.dom.nomeProdutoEntrada.addEventListener("input", atualizarSugestoesNomeEntrada);
+    app.dom.nomeProdutoEntrada.addEventListener("focus", atualizarSugestoesNomeEntrada);
+    app.dom.codigoProdutoSaida.addEventListener("input", atualizarSugestoesCodigoSaida);
+    app.dom.codigoProdutoSaida.addEventListener("focus", atualizarSugestoesCodigoSaida);
+    app.dom.nomeProdutoSaida.addEventListener("input", atualizarSugestoesNomeSaida);
+    app.dom.nomeProdutoSaida.addEventListener("focus", atualizarSugestoesNomeSaida);
+    registrarFechamentoPorBlur(app.dom.codigoProdutoEntrada, app.dom.listaSugestoes1);
+    registrarFechamentoPorBlur(app.dom.nomeProdutoEntrada, app.dom.listaSugestoes2);
+    registrarFechamentoPorBlur(app.dom.codigoProdutoSaida, app.dom.listaSugestoes3);
+    registrarFechamentoPorBlur(app.dom.nomeProdutoSaida, app.dom.listaSugestoes4);
     app.dom.formOrdemE.addEventListener("submit", adicionarOrdemEntrada);
     app.dom.formOrdemS.addEventListener("submit", adicionarOrdemSaida);
     app.dom.atualizarTabelaOrdens.addEventListener("click", mostrarTudo);
@@ -691,10 +983,96 @@
       salvarOrdemEditada();
     });
     app.dom.marcarTudoBtn.addEventListener("click", alternarMarcarTudo);
+    app.dom.btnAplicarFiltroOrdem.addEventListener("click", filtrarOrdens);
+    app.dom.btnLimparFiltroOrdem.addEventListener("click", () => {
+      app.dom.filtroOrdem.value = "";
+      app.dom.paragrafoErroBuscar.textContent = "";
+      app.state.paginacaoOrdens.setDados(app.state.arrayOrdens);
+      atualizarVisibilidadeBotoesFiltroOrdem();
+    });
+    app.dom.filtroOrdem.addEventListener(
+      "change",
+      atualizarVisibilidadeBotoesFiltroOrdem
+    );
 
     app.dom.btnEditarOrdemEditar.hidden = true;
     app.dom.marcarTudoBtn.hidden = true;
     app.dom.marcarTudoBtn.textContent = "Marcar Tudo";
+    limparTodasSugestoesOrdens();
+
+    atualizarVisibilidadeBotoesFiltroOrdem();
+  }
+
+  // Mostra ou esconde os botoes de filtro conforme o select de ordens recebe valor.
+  function atualizarVisibilidadeBotoesFiltroOrdem() {
+    const mostrar = Boolean(app.dom.filtroOrdem.value);
+    app.dom.btnAplicarFiltroOrdem.hidden = !mostrar;
+    app.dom.btnLimparFiltroOrdem.hidden = !mostrar;
+  }
+
+  // Aplica o filtro ou a ordenacao escolhida no painel de ordens.
+  function filtrarOrdens() {
+    const valorFiltro = app.dom.filtroOrdem.value;
+    if (!valorFiltro) return;
+
+    app.dom.paragrafoErroBuscar.textContent = "";
+
+    const compararTexto = (a, b) =>
+      String(a ?? "").localeCompare(String(b ?? ""), "pt-BR", {
+        sensitivity: "base",
+      });
+    const compararNumero = (a, b) => Number(a ?? 0) - Number(b ?? 0);
+
+    let resultados = [...app.state.arrayOrdens];
+
+    if (valorFiltro === "cliente_az") {
+      resultados = resultados
+        .filter((ordem) => ordem.tipo === "saida")
+        .sort((a, b) => compararTexto(a.pessoa, b.pessoa));
+    } else if (valorFiltro === "cliente_za") {
+      resultados = resultados
+        .filter((ordem) => ordem.tipo === "saida")
+        .sort((a, b) => compararTexto(b.pessoa, a.pessoa));
+    } else if (valorFiltro === "fornecedor_az") {
+      resultados = resultados
+        .filter((ordem) => ordem.tipo === "entrada")
+        .sort((a, b) => compararTexto(a.pessoa, b.pessoa));
+    } else if (valorFiltro === "fornecedor_za") {
+      resultados = resultados
+        .filter((ordem) => ordem.tipo === "entrada")
+        .sort((a, b) => compararTexto(b.pessoa, a.pessoa));
+    } else if (valorFiltro === "codigo_az_ordem") {
+      resultados.sort((a, b) => compararTexto(a.codigoProduto, b.codigoProduto));
+    } else if (valorFiltro === "codigo_za_ordem") {
+      resultados.sort((a, b) => compararTexto(b.codigoProduto, a.codigoProduto));
+    } else if (valorFiltro === "produto_az_ordem") {
+      resultados.sort((a, b) => compararTexto(a.produto, b.produto));
+    } else if (valorFiltro === "produto_za_ordem") {
+      resultados.sort((a, b) => compararTexto(b.produto, a.produto));
+    } else if (valorFiltro === "quantidade_crescente_ordem-ent") {
+      resultados = resultados
+        .filter((ordem) => ordem.tipo === "entrada")
+        .sort((a, b) => compararNumero(a.quantidade, b.quantidade));
+    } else if (valorFiltro === "quantidade_decrescente_ordem-ent") {
+      resultados = resultados
+        .filter((ordem) => ordem.tipo === "entrada")
+        .sort((a, b) => compararNumero(b.quantidade, a.quantidade));
+    } else if (valorFiltro === "quantidade_crescente_ordem-sai") {
+      resultados = resultados
+        .filter((ordem) => ordem.tipo === "saida")
+        .sort((a, b) => compararNumero(a.quantidade, b.quantidade));
+    } else if (valorFiltro === "quantidade_decrescente_ordem-sai") {
+      resultados = resultados
+        .filter((ordem) => ordem.tipo === "saida")
+        .sort((a, b) => compararNumero(b.quantidade, a.quantidade));
+    }
+
+    if (resultados.length === 0) {
+      app.dom.paragrafoErroBuscar.textContent =
+        "Nenhuma ordem encontrada para o filtro selecionado.";
+    }
+
+    app.state.paginacaoOrdens.setDados(resultados);
   }
 
   app.orders = {

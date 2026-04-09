@@ -7,6 +7,16 @@
     return td;
   }
 
+  function formatarDataOrdem(data) {
+    const texto = String(data ?? "").trim();
+    if (texto === "") return "";
+
+    const partes = texto.split("-");
+    if (partes.length !== 3) return texto;
+
+    return partes[2] + "/" + partes[1] + "/" + partes[0];
+  }
+
   // Renderiza as linhas da tabela principal com os produtos visiveis na pagina atual.
   function renderProdutos(lista) {
     app.dom.corpoTabela.replaceChildren();
@@ -51,6 +61,7 @@
       const tdEntrada = criarCelulaTabela(entradaTxt);
       const tdCliente = criarCelulaTabela(clienteTxt);
       const tdSaida = criarCelulaTabela(saidaTxt);
+      const tdData = criarCelulaTabela(formatarDataOrdem(ordem.data));
 
       tr.append(
         tdCodigo,
@@ -58,12 +69,16 @@
         tdFornecedor,
         tdEntrada,
         tdCliente,
-        tdSaida
+        tdSaida,
+        tdData
       );
 
       app.dom.tabelaCorpoOrdens.appendChild(tr);
     }
   }
+
+
+
 
   // Atualiza o select de categorias dentro do formulario de cadastro de produto.
   function renderSelectCategorias() {

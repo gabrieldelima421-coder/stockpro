@@ -463,6 +463,64 @@ td.negativo {
  font-size: 15px;
  box-sizing: border-box;
 }
+.ligar_Input_conteudo .lista-sugestoes,
+.ligar_Input_saidaVenda_conteudo .lista-sugestoes {
+ width: 100%;
+ margin-top: 0;
+ margin-bottom: 6px;
+ box-sizing: border-box;
+ border: 1px solid #c9cdd3;
+ border-radius: 0 0 8px 8px;
+ background: #fff;
+ box-shadow: 0 6px 14px rgba(0, 0, 0, 0.06);
+ overflow: hidden;
+}
+.lista-sugestoes[hidden] {
+ display: none;
+}
+.item-sugestao-produto {
+ width: 100%;
+ border: 0;
+ border-top: 1px solid #edf0f3;
+ background: #fff !important;
+ color: #000 !important;
+ padding: 9px 12px;
+ display: block;
+ text-align: left;
+ cursor: pointer;
+ text-transform: none;
+ text-shadow: none;
+ letter-spacing: normal;
+ font-family: Arial, Helvetica, sans-serif !important;
+ font-weight: 400 !important;
+ font-size: 14px;
+ line-height: 1.35;
+}
+.item-sugestao-produto:first-child {
+ border-top: 0;
+}
+.item-sugestao-produto:hover,
+.item-sugestao-produto:focus {
+ background: #f7f7f7 !important;
+ color: #000 !important;
+ outline: none;
+ filter: none;
+ box-shadow: none;
+ transform: none;
+}
+.item-sugestao-texto {
+ color: #000;
+ font-family: Arial, Helvetica, sans-serif !important;
+ font-weight: 400 !important;
+}
+.item-sugestao-vazia {
+ padding: 9px 12px;
+ color: #333;
+ font-family: Arial, Helvetica, sans-serif;
+ font-weight: 400;
+ font-size: 14px;
+ line-height: 1.35;
+}
 .ligar_Input button[type="submit"] {
  width: 110px;
  height: 36px;
@@ -629,7 +687,7 @@ td.negativo {
  --azul-3: rgb(107, 111, 187);
  --raio-padrao: 10px;
 }
-button:not(#button_legenda) {
+button:not(#button_legenda):not(.item-sugestao-produto) {
  border: 1px solid rgba(5, 23, 128, 0.35);
  border-radius: var(--raio-padrao);
  background: linear-gradient(to bottom, var(--azul-1), var(--azul-2), var(--azul-3));
@@ -642,7 +700,7 @@ button:not(#button_legenda) {
  -1px 1px 0 rgb(0, 0, 0), 1px 1px 0 rgb(0, 0, 0);
  transition: transform 0.12s ease, box-shadow 0.15s ease, filter 0.15s ease;
 }
-button:not(:disabled):not(#button_legenda):hover {
+button:not(:disabled):not(#button_legenda):not(.item-sugestao-produto):hover {
  transform: translateY(-1px);
  box-shadow: 0 6px 14px rgba(0, 0, 0, 0.22);
  filter: brightness(1.08);

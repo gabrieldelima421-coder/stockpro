@@ -82,23 +82,30 @@
     btnVoltarPagOrdem: document.getElementById("voltar-ordens"), // Botao para voltar uma pagina nas ordens.
     btnProximaPaginaOrdem: document.getElementById("proximo-ordens"), // Botao para avancar uma pagina nas ordens.
     btnUltimaPagOrdem: document.getElementById("ultimo-ordens"), // Botao para a ultima pagina da lista de ordens.
-
+    filtroOrdem: document.getElementById("filtro-opcoes-ordem"), // Select com os tipos de filtro e ordenacao das ordens.
+    btnAplicarFiltroOrdem: document.getElementById("aplicar_filtro_ordem"), // Botao que confirma o filtro escolhido nas ordens.
+    btnLimparFiltroOrdem: document.getElementById("limpar_filtro_ordem"), // Botao que remove o filtro aplicado nas ordens.
+    
     // Modal de ordem de entrada.
     popUpRegistroOrdens: document.getElementById(
       "popup_compra_entrada_saida_venda"
     ), // Container externo do modal de compra ou entrada.
     btnFecharOrdem2: document.getElementById("btnFechar_ordem2"), // Botao que fecha o modal de entrada.
     formOrdemE: document.getElementById("form-ordem-entrada"), // Formulario de cadastro de ordem de entrada.
-    produtoFornecedor: document.getElementById("produto_fornecedor"), // Campo do codigo do produto na ordem de entrada.
-    fornecedor: document.getElementById("fornecedor"), // Campo do fornecedor da ordem de entrada.
-    inserirOredemEntrada: document.getElementById("inserir_ordemComEnt"), // Campo da quantidade de entrada.
+    codigoProdutoEntrada: document.getElementById("produto_fornecedor"), // Campo do codigo do produto na ordem de entrada.
+    listaSugestoes1: document.getElementById("listaSugestoes1"), // Lista de sugestoes abaixo do codigo na ordem de entrada.
+    fornecedorEntrada: document.getElementById("fornecedor"), // Campo do fornecedor da ordem de entrada.
+    quantidadeEntrada: document.getElementById("inserir_ordemComEnt"), // Campo da quantidade de entrada.
+    dataCompra: document.getElementById("data-compra"), // Campo da data da ordem de entrada.
     btnSalvarEntrada: document.getElementById("salvar_ordemComEnt"), // Botao que salva a ordem de entrada.
-    produtoNomeEntrada: document.getElementById("nome_produto_entrada"), // Campo do nome do produto na ordem de entrada.
+    nomeProdutoEntrada: document.getElementById("nome_produto_entrada"), // Campo do nome do produto na ordem de entrada.
+    listaSugestoes2: document.getElementById("listaSugestoes2"), // Lista de sugestoes abaixo do nome do produto na ordem de entrada.
     paragrafoCodigoProduto: document.getElementById("paragrafo_codigo_produto"), // Area de erro para o codigo no modal de entrada.
-    paragrafoFornecedor: document.getElementById("paragrafo_fornecedor"), // Area de erro para o fornecedor no modal de entrada.
-    paragrafoCompraQuantidade: document.getElementById(
+    paragrafoFornecedorEntrada: document.getElementById("paragrafo_fornecedor"), // Area de erro para o fornecedor no modal de entrada.
+    paragrafoQuantidadeEntrada: document.getElementById(
       "paragrafo_compra_quantidade"
     ), // Area de erro para a quantidade da ordem de entrada.
+    paragrafoErroDataCompra: document.getElementById("erro-data"), // Area de erro para a data da ordem de entrada.
     paragrafoNomeProdutoEntrada: document.getElementById(
       "paragrafo_nome_produto_entrada"
     ), // Area de erro para o nome do produto na ordem de entrada.
@@ -107,21 +114,25 @@
     popupSaida: document.getElementById("popup_saida_venda"), // Container externo do modal de saida ou venda.
     btnFecharOrdem3: document.getElementById("btnFechar_ordem3"), // Botao que fecha o modal de saida.
     formOrdemS: document.getElementById("form-ordem-saida"), // Formulario de cadastro de ordem de saida.
-    produtoCliente: document.getElementById("produto_cliente"), // Campo do codigo do produto na ordem de saida.
-    cliente: document.getElementById("cliente"), // Campo do cliente da ordem de saida.
-    inserirOredemSaida: document.getElementById("inserir_ordemComSai"), // Campo da quantidade de saida.
+    codigoProdutoSaida: document.getElementById("produto_cliente"), // Campo do codigo do produto na ordem de saida.
+    listaSugestoes3: document.getElementById("listaSugestoes3"), // Lista de sugestoes abaixo do codigo na ordem de saida.
+    clienteSaida: document.getElementById("cliente"), // Campo do cliente da ordem de saida.
+    quantidadeSaida: document.getElementById("inserir_ordemComSai"), // Campo da quantidade de saida.
+    dataSaida: document.getElementById("data-saida"), // Campo da data da ordem de saida.
     btnSalvarSaida: document.getElementById("salvar_ordemComSai"), // Botao que salva a ordem de saida.
-    produtoNomeSaida: document.getElementById("nome_produto_saida"), // Campo do nome do produto na ordem de saida.
+    nomeProdutoSaida: document.getElementById("nome_produto_saida"), // Campo do nome do produto na ordem de saida.
+    listaSugestoes4: document.getElementById("listaSugestoes4"), // Lista de sugestoes abaixo do nome do produto na ordem de saida.
     paragrafoNomeProdutoSaida: document.getElementById(
       "paragrafo_nome_produto_saida"
     ), // Area de erro para o nome do produto na ordem de saida.
     paragrafoCodigoProdutoSaida: document.getElementById(
       "paragrafo_codigo_produto_saida"
     ), // Area de erro para o codigo do produto na ordem de saida.
-    paragrafoCliente: document.getElementById("paragrafo_cliente"), // Area de erro para o cliente no modal de saida.
-    paragrafoSaidaQuantidade: document.getElementById(
+    paragrafoClienteSaida: document.getElementById("paragrafo_cliente"), // Area de erro para o cliente no modal de saida.
+    paragrafoQuantidadeSaida: document.getElementById(
       "paragrafo_saida_quantidade"
     ), // Area de erro para a quantidade na ordem de saida.
+    paragrafoErroDataSaida: document.getElementById("erro-data-saida"), // Area de erro para a data da ordem de saida.
 
     // Painel de busca e edicao de ordens.
     popUpEditarOrdem: document.getElementById("editar_ordem"), // Container externo do painel de editar ordens.
@@ -145,12 +156,14 @@
     inputEditarCliente: document.getElementById("editar_cliente"), // Campo do cliente na edicao da ordem.
     inputEditarEntrada: document.getElementById("editar_entrada"), // Campo da quantidade de entrada na edicao.
     inputEditarSaida: document.getElementById("editar_saida"), // Campo da quantidade de saida na edicao.
+    inputEditarData: document.getElementById("editar_data"), // Campo da data na edicao da ordem.
     paraagrafoErro1: document.getElementById("erro1"), // Area de erro para o codigo na edicao da ordem.
     paraagrafoErro2: document.getElementById("erro2"), // Area de erro para o nome do produto na edicao da ordem.
     paraagrafoErro3: document.getElementById("erro3"), // Area de erro para o fornecedor na edicao da ordem.
     paraagrafoErro4: document.getElementById("erro4"), // Area de erro para o cliente na edicao da ordem.
     paraagrafoErro5: document.getElementById("erro5"), // Area de erro para quantidade invalida na edicao.
     paraagrafoErro6: document.getElementById("erro6"), // Area de erro para conflitos entre entrada e saida na edicao.
+    paragrafoErroDataEdicao: document.getElementById("erro7"), // Area de erro para a data na edicao da ordem.
     btnSalvarEditarOrdem: document.getElementById("salvar_editar_ordem"), // Botao que salva a ordem apos editar.
     btnFecharEditarOrdemDentro: document.getElementById(
       "btn_fechar_editar_ordem_dentro"

@@ -57,7 +57,17 @@
                 <label for="email-recuperar">E-mail</label>
                 <input id="email-recuperar" name="email-recuperar" type="email" placeholder="digite seu email">
                 <p id="paragrafo-recuperar"></p>
-<button id="btn-enviar" type="submit">Enviar</button>
+                <div id="etapa-redefinir" hidden>
+                <label for="codigo-recuperar">Codigo de recuperacao</label>
+                <input id="codigo-recuperar" name="codigo-recuperar" type="text" inputmode="numeric" maxlength="6" placeholder="digite o codigo">
+                <p id="paragrafo-codigo-recuperar"></p>
+
+                <label for="nova-senha-recuperar">Nova senha</label>
+                <input id="nova-senha-recuperar" name="nova-senha-recuperar" type="password" placeholder="digite a nova senha">
+                <p id="paragrafo-nova-senha-recuperar"></p>
+                </div>
+<button id="btn-enviar" type="button">Enviar codigo</button>
+<button id="btn-redefinir-senha" type="submit" hidden>Redefinir senha</button>
                 </form>
             </div>
         </div>

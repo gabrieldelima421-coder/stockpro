@@ -271,6 +271,18 @@ color: black;
   box-shadow: 0 0 0 2px rgba(19, 94, 245, 0.25);
 }
 
+#recuperar p {
+  margin: -2px 0 2px;
+  font-size: 14px;
+  color: #0f172a;
+}
+
+#etapa-redefinir {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
 
 #btn-enviar {
    margin-top: 14px;
@@ -286,6 +298,25 @@ color: black;
 }
 
 #btn-enviar:hover {
+  background: #0a46c2;
+  box-shadow: 0 6px 15px rgba(19, 94, 245, 0.5);
+  transform: translateY(-1px);
+}
+
+#btn-redefinir-senha {
+  margin-top: 6px;
+  padding: 8px 12px;
+  border-radius: 999px;
+  border: none;
+  background: #135ef5;
+  color: #ffffff;
+  font-weight: 600;
+  font-size: 15px;
+  cursor: pointer;
+  transition: transform 0.1s ease, box-shadow 0.1s ease, background 0.1s ease;
+}
+
+#btn-redefinir-senha:hover {
   background: #0a46c2;
   box-shadow: 0 6px 15px rgba(19, 94, 245, 0.5);
   transform: translateY(-1px);

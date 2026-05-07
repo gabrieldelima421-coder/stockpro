@@ -48,12 +48,12 @@
   }
 
   // Faz a inicializacao da aplicacao ligando paginacoes, regras de formulario e eventos.
-  function iniciarAplicacao() {
+  async function iniciarAplicacao() {
+    await app.storage.carregarEstado();
     configurarPaginacoes();
     app.reorder.configurarCamposConsumo();
     app.categories.bindEvents();
     app.inventory.bindEvents();
-    app.orders.bindEvents();
     app.categories.renderPainelEditarCategoria();
   }
 

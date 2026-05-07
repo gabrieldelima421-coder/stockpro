@@ -47,6 +47,44 @@
     app.dom.codigo.focus();
   }
 
+  function produtoEstaAbaixoPontoReposicao(produto) {
+    const quantidade = Number(produto?.quantidade);
+    const pontoReposicao = Number(produto?.pontoReposicao);
+
+    return (
+      Number.isFinite(quantidade) &&
+      Number.isFinite(pontoReposicao) &&
+      quantidade < pontoReposicao
+    );
+  }
+
+  function atualizarDashboard() {
+    if (app.dom.totalProdutos) {
+      app.dom.totalProdutos.textContent = String(app.state.produtos.length);
+    }
+
+    if (app.dom.produtosAbaixoPR) {
+      const totalAbaixo = app.state.produtos.filter(
+        produtoEstaAbaixoPontoReposicao
+      ).length;
+      app.dom.produtosAbaixoPR.textContent = String(totalAbaixo);
+    }
+  }
+
+  function abrirInventario() {
+    if (app.dom.divInventario) {
+      app.dom.divInventario.hidden = false;
+    }
+  }
+
+  function mostrarInventario(event) {
+    if (event) event.preventDefault();
+    abrirInventario();
+    app.dom.paragrafoErrBusca.textContent = "";
+    app.dom.pesquisar.value = "";
+    app.state.paginacaoInventario.setDados(app.state.produtos);
+  }
+
   // Abre o modal de editar registro no mesmo padrao visual do cadastro principal.
   function abrirModalEditarRegistro(event) {
     event.preventDefault();
@@ -278,11 +316,14 @@
     app.state.produtos.splice(registroSelecionadoIndex, 1);
     removerOrdensDoProduto(produtoRemovido.codigo);
     app.state.paginacaoInventario.setDados(app.state.produtos);
+    atualizarDashboard();
 
     if (app.state.paginacaoOrdens) {
       app.state.paginacaoOrdens.setDados(app.state.arrayOrdens);
     }
 
+    app.storage.salvarProdutos();
+    app.storage.salvarOrdens();
     fecharModalEditarRegistro();
   }
 
@@ -358,11 +399,14 @@
     app.state.produtos[registroSelecionadoIndex] = produtoAtualizado;
     sincronizarOrdensComProdutoEditado(codigoAnterior, produtoAtualizado);
     app.state.paginacaoInventario.setDados(app.state.produtos);
+    atualizarDashboard();
 
     if (app.state.paginacaoOrdens) {
       app.state.paginacaoOrdens.setDados(app.state.arrayOrdens);
     }
 
+    app.storage.salvarProdutos();
+    app.storage.salvarOrdens();
     fecharModalEditarRegistro();
   }
 
@@ -425,6 +469,8 @@
     });
 
     app.state.paginacaoInventario.setDados(app.state.produtos);
+    atualizarDashboard();
+    app.storage.salvarProdutos();
     app.dom.form.reset();
     app.dom.paragrafoErroRegistro.textContent = "";
     app.modal.fecharModal(app.dom.popup);
@@ -469,6 +515,22 @@
     app.dom.paragrafoErrBusca.textContent = "";
     app.dom.pesquisar.value = "";
     app.state.paginacaoInventario.setDados(app.state.produtos);
+  }
+
+  function mostrarProdutosAbaixoPR(event) {
+    event.preventDefault();
+    abrirInventario();
+
+    const resultados = app.state.produtos.filter(produtoEstaAbaixoPontoReposicao);
+    app.dom.paragrafoErrBusca.textContent = "";
+    app.dom.pesquisar.value = "";
+
+    if (resultados.length === 0) {
+      app.dom.paragrafoErrBusca.textContent =
+        "Nenhum produto abaixo do ponto de reposicao.";
+    }
+
+    app.state.paginacaoInventario.setDados(resultados);
   }
 
   // Aplica o filtro ou a ordenacao escolhida no select da tela principal.
@@ -526,6 +588,7 @@
 
   // Liga os eventos do cadastro principal, da busca e dos filtros do inventario.
   function bindEvents() {
+    app.dom.btnInventario.addEventListener("click", mostrarInventario);
     app.dom.registrar.addEventListener("click", abrirModalRegistro);
     app.dom.botaoFecharPopUp.addEventListener("click", () => {
       app.modal.fecharModal(app.dom.popup);
@@ -571,6 +634,7 @@
       procurarProduto();
     });
     app.dom.btnRecarregarLista.addEventListener("click", recarregarLista);
+    app.dom.verProdutosAbaixoPR.addEventListener("click", mostrarProdutosAbaixoPR);
     app.dom.btnAplicarFiltro.addEventListener("click", filtroInventario);
     app.dom.btnLimparFiltro.addEventListener("click", () => {
       app.dom.filtroOpcoes.value = "";
@@ -583,6 +647,7 @@
     );
 
     atualizarVisibilidadeBotoesFiltro();
+    atualizarDashboard();
     configurarCamposConsumoEdicao();
   }
 

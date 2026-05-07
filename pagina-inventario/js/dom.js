@@ -6,6 +6,11 @@
     btnCategoria: document.getElementById("categoria"), // Botao que abre o painel de categorias.
     registrar: document.getElementById("registro"), // Botao que abre o formulario principal de cadastro.
     ordens: document.getElementById("ordens"), // Botao que abre o painel de ordens.
+    btnInventario: document.getElementById("btn-inventario"), // Botao que abre a area do inventario.
+    divInventario: document.getElementById("div-inventario"), // Area principal da tabela de inventario.
+    totalProdutos: document.getElementById("totalCadastro"), // Total de produtos cadastrados no dashboard.
+    produtosAbaixoPR: document.getElementById("produtosAbaixoPR"), // Total de produtos abaixo do ponto de reposicao.
+    verProdutosAbaixoPR: document.getElementById("verProdutosAbaixoPR"), // Atalho para filtrar produtos abaixo do ponto de reposicao.
 
     // Controles da listagem principal de produtos.
     pesquisar: document.getElementById("buscar"), // Campo de busca do inventario.
@@ -169,5 +174,9 @@
       "btn_fechar_editar_ordem_dentro"
     ), // Botao que fecha o modal interno de edicao da ordem.
     marcarTudoBtn: document.getElementById("marcar_tudo"), // Botao que marca ou desmarca todas as ordens da lista de edicao.
+    btnInicioEditarOrdens: document.getElementById("inicio-editar-ordens"), // Botao para a primeira pagina da lista de edicao de ordens.
+    btnVoltarEditarOrdens: document.getElementById("voltar-editar-ordens"), // Botao para voltar pagina na lista de edicao de ordens.
+    btnProximaEditarOrdens: document.getElementById("proximo-editar-ordens"), // Botao para avancar pagina na lista de edicao de ordens.
+    btnUltimoEditarOrdens: document.getElementById("ultimo-editar-ordens"), // Botao para a ultima pagina da lista de edicao de ordens.
   };
 })(window.StockPro = window.StockPro || {});

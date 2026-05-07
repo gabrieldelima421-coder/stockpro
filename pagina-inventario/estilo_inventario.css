@@ -7,6 +7,65 @@ body {
  background-size: 100% 100%;
  background-position: center center;
 }
+
+html {
+ min-height: 100%;
+}
+body {
+ min-height: 100vh;
+ min-height: 100dvh;
+}
+.info-dashboard {
+ width: min(82%, 520px);
+ margin: 14px auto 0;
+ display: flex;
+ justify-content: center;
+ align-items: stretch;
+ gap: 10px;
+}
+.info-bloco {
+ flex: 1;
+ min-height: 68px;
+ padding: 9px 12px;
+ border: 1px solid rgba(0, 0, 0, 0.22);
+ border-radius: 8px;
+ background: rgba(255, 255, 255, 0.92);
+ box-shadow: 0 4px 10px rgba(0, 0, 0, 0.16);
+ display: flex;
+ flex-direction: column;
+ justify-content: center;
+ align-items: center;
+ gap: 5px;
+ text-align: center;
+ font-family: Arial, Helvetica, sans-serif;
+}
+.info-bloco h2 {
+ margin: 0;
+ font-size: 12px;
+ line-height: 1.25;
+ color: #111827;
+ text-transform: uppercase;
+}
+.info-bloco span {
+ font-size: 22px;
+ line-height: 1;
+ font-weight: 700;
+}
+.info-total span {
+ color: rgb(3, 144, 12);
+}
+.info-reposicao span {
+ color: rgb(214, 0, 0);
+}
+.info-reposicao a {
+ color: rgb(3, 15, 244);
+ font-size: 12px;
+ font-weight: 700;
+ text-decoration: none;
+}
+.info-reposicao a:hover {
+ text-decoration: underline;
+}
 .titulo {
  display: flex;
  justify-content: center;
@@ -53,6 +112,46 @@ body {
 .alerta-reposicao-texto {
  font-weight: bold;
 }
+.titulo {
+ justify-content: flex-start;
+ align-items: stretch;
+ gap: 10px;
+ width: 100%;
+ min-height: 0;
+ padding-top: 12px;
+ box-sizing: border-box;
+ font-style: normal;
+}
+.titulo h1 {
+ display: flex;
+ justify-content: center;
+ align-items: center;
+ width: 100%;
+ min-height: 200px;
+ height: auto;
+ box-sizing: border-box;
+ line-height: 1;
+ margin: 0;
+ padding: 10px 20px;
+ border-radius: 0;
+ border-left: 0;
+ border-right: 0;
+ font-style: italic;
+}
+.titulo h2 {
+ box-sizing: border-box;
+ padding: 8px 20px;
+ margin: 0;
+}
+.titulo-inventario {
+ text-align: center !important;
+ color: rgb(30, 65, 243) !important;
+ margin: 0 auto 10px !important;
+ font-size: 25px !important;
+ font-family: Arial, Helvetica, sans-serif !important;
+ text-shadow: -1px -1px 0 rgb(0, 0, 0), 1px -1px 0 rgb(0, 0, 0),
+ -1px 1px 0 rgb(0, 0, 0), 1px 1px 0 rgb(0, 0, 0) !important;
+}
 .botoes {
  display: flex;
  justify-content: center;
@@ -62,22 +161,28 @@ body {
  flex-wrap: wrap;
  padding: 0 16px;
 }
-.botoes button {
+.botoes button,
+.botoes a {
+ display: inline-flex;
+ justify-content: center;
+ align-items: center;
  font-size: 16px;
  height: 34px;
  min-width: 120px;
- border: none;
+ border: 1px solid rgba(0, 0, 0, 0.28);
  border-radius: 12px;
  cursor: pointer;
  background: linear-gradient(to bottom, rgb(3, 15, 244), rgb(52, 89, 210), rgb(180, 181, 202));
  color: white;
  font-family: Arial, Helvetica, sans-serif;
  font-weight: bold;
+ text-decoration: none;
  text-transform: uppercase;
  text-shadow: -1px -1px 0 rgb(0, 0, 0), 1px -1px 0 rgb(0, 0, 0),
  -1px 1px 0 rgb(0, 0, 0), 1px 1px 0 rgb(0, 0, 0);
 }
-.botoes button:hover {
+.botoes button:hover,
+.botoes a:hover {
  transform: translateY(-1px);
  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.2);
  filter: brightness(1.1);
@@ -161,9 +266,12 @@ body {
 table {
  width: 70%;
  max-width: 1100px;
- border-collapse: collapse;
+ border-collapse: separate;
+ border-spacing: 0;
  background-color: rgba(255, 255, 255, 0.92);
- border: solid rgb(164, 166, 168);
+ border: none;
+ border-radius: 12px;
+ overflow: hidden;
  margin-bottom: 20px;
 }
 thead {
@@ -173,7 +281,8 @@ thead {
 }
 th {
  padding: 10px 16px;
- border: 1px solid white;
+ border: 0;
+ border-right: 1px solid rgba(255, 255, 255, 0.55);
  text-align: left;
  font-size: 24px;
 }
@@ -182,7 +291,16 @@ td {
  text-align: left;
  font-size: 20px;
  color: black;
- border: 1px solid #ccc;
+ border: 0;
+ border-right: 1px solid rgba(0, 0, 0, 0.1);
+ border-bottom: 1px solid rgba(0, 0, 0, 0.1);
+}
+th:last-child,
+td:last-child {
+ border-right: 0;
+}
+tbody tr:last-child td {
+ border-bottom: 0;
 }
 td.negativo {
  background-color: rgb(243, 93, 93);
@@ -742,7 +860,8 @@ textarea:focus {
  .botoes {
  gap: 10px;
  }
- .botoes button {
+ .botoes button,
+ .botoes a {
  width: 100%;
  max-width: 280px;
  min-width: 0;

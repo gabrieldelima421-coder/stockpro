@@ -9,30 +9,32 @@
   <body>
     <div class="titulo">
       <h1>Stock-pro</h1>
-      <h2 id="h2titulo">Painel de Controle</h2>
+      <h2 id="h2titulo">Dashboard</h2>
+    </div>
+
+    <div class="info-dashboard">
+      <section class="info-bloco info-total">
+        <h2>Total de Produtos Cadastrados</h2>
+        <span id="totalCadastro"></span>
+      </section>
+
+      <section class="info-bloco info-reposicao">
+        <h2>Produtos Abaixo do Ponto de Reposição</h2>
+        <span id="produtosAbaixoPR"></span>
+        <a id="verProdutosAbaixoPR" href="#">Clique aqui para ver</a>
+      </section>
     </div>
 
     <!--*======================= BOTÕES ============================-->
     <div class="botoes">
+      <button type="button" id="btn-inventario">Inventario</button>
       <button id="categoria" type="button">Categorias</button>
       <button id="registro" type="button">Registrar</button>
       <button type="button" id="editar-re">Editar Registro</button>
-      <button id="ordens" type="button">Ordens</button>
+      <a id="ordens" href="../pagina-ordens/ordens.html">Ordens</a>
     </div>
-    <h2
-      style="
-        text-align: center;
-        color: rgb(30, 65, 243);
-        margin-top: -15px;
-        font-size: 25px;
-        font-family: Arial, Helvetica, sans-serif;
-        text-shadow:
-          -1px -1px 0 rgb(0, 0, 0),
-          1px -1px 0 rgb(0, 0, 0),
-          -1px 1px 0 rgb(0, 0, 0),
-          1px 1px 0 rgb(0, 0, 0);
-      "
-    >
+    <div id="div-inventario" hidden>
+    <h2 class="titulo-inventario">
       INVENTÁRIO
     </h2>
 
@@ -111,6 +113,7 @@
       </div>
 
       <!--*=============================================================================================-->
+    </div>
     </div>
 
     <!--?POP-UP CATEGORIAS====================================================================-->
@@ -617,6 +620,7 @@
       </div>
     </div>
     <script src="js/state.js" defer></script>
+    <script src="js/storage.js" defer></script>
     <script src="js/dom.js" defer></script>
     <script src="js/modal.js" defer></script>
     <script src="js/utils.js" defer></script>

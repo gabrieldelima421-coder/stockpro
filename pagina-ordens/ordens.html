@@ -1,0 +1,310 @@
+<!doctype html>
+<html lang="pt-br">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Ordens</title>
+    <link rel="stylesheet" href="ordens.css" />
+  </head>
+  <body>
+    <div class="titulo">
+      <h1>Stock-pro</h1>
+      <h2 id="h2titulo">Ordens</h2>
+    </div>
+
+    <nav class="botoes">
+      <a class="botao-navegacao" href="../pagina-inventario/inventario.html">
+        Dashboard
+      </a>
+    </nav>
+
+    <main class="ordens-pagina">
+      <section class="ordens-conteudo" aria-labelledby="titulo-ordens">
+        <div class="ordens-cabecalho">
+          <h2 id="titulo-ordens">Ordens</h2>
+          <h3>Minhas ordens</h3>
+        </div>
+
+        <div class="controles-tabela ordens-filtros">
+          <div class="filtro">
+            <label for="filtro-opcoes-ordem">Filtro:</label>
+            <select id="filtro-opcoes-ordem" name="filtro-opcoes-ordem">
+              <option value="" selected disabled>Selecionar por</option>
+              <option value="cliente_az">Cliente A-Z</option>
+              <option value="cliente_za">Cliente Z-A</option>
+              <option value="fornecedor_az">Fornecedor A-Z</option>
+              <option value="fornecedor_za">Fornecedor Z-A</option>
+              <option value="codigo_az_ordem">Código A-Z</option>
+              <option value="codigo_za_ordem">Código Z-A</option>
+              <option value="produto_az_ordem">Produto A-Z</option>
+              <option value="produto_za_ordem">Produto Z-A</option>
+              <option value="quantidade_crescente_ordem-ent">
+                Quantidade, Compra/Entrada: ordem crescente
+              </option>
+              <option value="quantidade_decrescente_ordem-ent">
+                Quantidade, Compra/Entrada: ordem decrescente
+              </option>
+              <option value="quantidade_crescente_ordem-sai">
+                Quantidade, Saída/Venda: ordem crescente
+              </option>
+              <option value="quantidade_decrescente_ordem-sai">
+                Quantidade, Saída/Venda: ordem decrescente
+              </option>
+            </select>
+            <button id="aplicar_filtro_ordem" type="button" hidden>
+              Aplicar filtro
+            </button>
+            <button id="limpar_filtro_ordem" type="button" hidden>
+              Limpar filtro
+            </button>
+          </div>
+        </div>
+
+        <div class="ordens-busca">
+          <label for="buscar_ordens">Procurar:</label>
+          <input
+            id="buscar_ordens"
+            type="text"
+            placeholder="produto, fornecedor, cliente..."
+            autocomplete="off"
+          />
+        </div>
+        <button type="button" class="btnPesquisar">BUSCAR</button>
+        <p id="paragrafo_buscar_ordens"></p>
+
+        <div class="btn_ordens">
+          <button id="todas_ordens" type="button">Recarregar lista atual</button>
+          <button id="compra_entrada" type="button">Compra/Entrada</button>
+          <button id="saida_venda" type="button">Saída/Venda</button>
+          <button id="btn_editar_ordem" type="button">Editar Ordens</button>
+        </div>
+
+        <h2 class="titulo-ultimas-ordens">Últimas ordens</h2>
+        <div class="tabela-scroll tabela-scroll-ordens">
+          <table id="tabela_ordens">
+            <thead>
+              <tr>
+                <th>Código</th>
+                <th>Produto</th>
+                <th>Fornecedor</th>
+                <th>Entrada</th>
+                <th>Cliente</th>
+                <th>Saída</th>
+                <th>Data</th>
+              </tr>
+            </thead>
+            <tbody id="corpo_tabela_ordens"></tbody>
+          </table>
+        </div>
+        <div class="controles-paginacao">
+          <button type="button" id="inicio-ordens" hidden>Início</button>
+          <button type="button" id="voltar-ordens" hidden>Voltar</button>
+          <button type="button" id="proximo-ordens" hidden>Próximo</button>
+          <button type="button" id="ultimo-ordens" hidden>Último</button>
+        </div>
+      </section>
+    </main>
+
+    <div id="popup_compra_entrada_saida_venda" class="ligar_Input">
+      <div class="ligar_Input_conteudo">
+        <form id="form-ordem-entrada">
+          <button id="btnFechar_ordem2" type="button">X</button>
+          <label for="produto_fornecedor">Código</label>
+          <input
+            id="produto_fornecedor"
+            name="produto_fornecedor"
+            type="text"
+            autocomplete="off"
+          />
+          <div id="listaSugestoes1" class="lista-sugestoes"></div>
+          <p id="paragrafo_codigo_produto"></p>
+
+          <label for="nome_produto_entrada">Produto</label>
+          <input
+            id="nome_produto_entrada"
+            name="nome_produto_entrada"
+            type="text"
+            autocomplete="off"
+          />
+          <div id="listaSugestoes2" class="lista-sugestoes"></div>
+          <p id="paragrafo_nome_produto_entrada"></p>
+
+          <label for="fornecedor">Fornecedor:</label>
+          <input id="fornecedor" name="fornecedor" type="text" autocomplete="off" />
+          <p id="paragrafo_fornecedor"></p>
+
+          <label for="inserir_ordemComEnt">Compra/Entrada:</label>
+          <input
+            id="inserir_ordemComEnt"
+            name="inserir_ordemComEnt"
+            type="number"
+            min="0"
+            step="1"
+          />
+          <p id="paragrafo_compra_quantidade"></p>
+
+          <label for="data-compra">Data</label>
+          <input id="data-compra" name="data-compra" type="date" />
+          <p id="erro-data"></p>
+          <button id="salvar_ordemComEnt" type="submit">Salvar</button>
+        </form>
+      </div>
+    </div>
+
+    <div id="popup_saida_venda" class="ligar_Input_saidaVenda">
+      <div class="ligar_Input_saidaVenda_conteudo">
+        <form id="form-ordem-saida">
+          <button id="btnFechar_ordem3" type="button">X</button>
+          <label for="produto_cliente">Código</label>
+          <input
+            id="produto_cliente"
+            name="produto_cliente"
+            type="text"
+            autocomplete="off"
+          />
+          <div id="listaSugestoes3" class="lista-sugestoes"></div>
+          <p id="paragrafo_codigo_produto_saida"></p>
+
+          <label for="nome_produto_saida">Produto</label>
+          <input
+            id="nome_produto_saida"
+            name="nome_produto_saida"
+            type="text"
+            autocomplete="off"
+          />
+          <div id="listaSugestoes4" class="lista-sugestoes"></div>
+          <p id="paragrafo_nome_produto_saida"></p>
+
+          <label for="cliente">Cliente:</label>
+          <input id="cliente" name="cliente" type="text" autocomplete="off" />
+          <p id="paragrafo_cliente"></p>
+
+          <label for="inserir_ordemComSai">Saída/Venda:</label>
+          <input
+            id="inserir_ordemComSai"
+            name="inserir_ordemComSai"
+            type="number"
+            min="0"
+            step="1"
+          />
+          <p id="paragrafo_saida_quantidade"></p>
+
+          <label for="data-saida">Data</label>
+          <input id="data-saida" name="data-saida" type="date" />
+          <p id="erro-data-saida"></p>
+          <button id="salvar_ordemComSai" type="submit">Salvar</button>
+        </form>
+      </div>
+    </div>
+
+    <div class="editar_ordem" id="editar_ordem">
+      <div class="editar_ordens_conteudo">
+        <button id="btn_fechar_editar_ordem" type="button">X</button>
+        <form id="formulario_pesquisa_editar_ordem">
+          <h3>EDITAR ORDENS</h3>
+          <label for="pesquisar_editar_ordem">Procurar ordens:</label>
+          <input
+            id="pesquisar_editar_ordem"
+            name="pesquisar_editar_ordem"
+            type="text"
+            placeholder="codigo, produto, cliente..."
+            autocomplete="off"
+          />
+          <button id="btn_buscar_ordens_editar" type="submit">Buscar</button>
+          <p id="pesquisar_ordem"></p>
+          <div class="lista-editar-ordens" id="lista_editar_ordens"></div>
+          <div class="controles-paginacao editar-ordens-paginacao">
+            <button type="button" id="inicio-editar-ordens" hidden>Início</button>
+            <button type="button" id="voltar-editar-ordens" hidden>Voltar</button>
+            <button type="button" id="proximo-editar-ordens" hidden>Próximo</button>
+            <button type="button" id="ultimo-editar-ordens" hidden>Último</button>
+          </div>
+        </form>
+        <div class="editar-ordens-acoes">
+          <button id="carregar_ordens" type="button">Carregar ordens</button>
+          <button id="editar_ordem_editar" type="button">Editar ordem</button>
+          <button id="remover_ordem" type="button">Remover</button>
+          <button id="marcar_tudo" type="button" hidden>Marcar Tudo</button>
+        </div>
+        <form id="form_editar_ordem">
+          <div class="editar_ordem_dentro" id="editar_ordem_dentro">
+            <div class="editar_ordem_dentro_conteudo">
+              <button id="btn_fechar_editar_ordem_dentro" type="button">
+                X
+              </button>
+              <label for="editar_codigo_produto">Código do Produto:</label>
+              <input
+                id="editar_codigo_produto"
+                name="editar_codigo_produto"
+                type="text"
+                autocomplete="off"
+              />
+              <p id="erro1"></p>
+
+              <label for="editar_nome_produto">Produto:</label>
+              <input
+                id="editar_nome_produto"
+                name="editar_nome_produto"
+                type="text"
+                autocomplete="off"
+              />
+              <p id="erro2"></p>
+
+              <label for="editar_fornecedor">Fornecedor:</label>
+              <input
+                id="editar_fornecedor"
+                name="editar_fornecedor"
+                type="text"
+                autocomplete="off"
+              />
+              <p id="erro3"></p>
+
+              <label for="editar_cliente">Cliente:</label>
+              <input
+                id="editar_cliente"
+                name="editar_cliente"
+                type="text"
+                autocomplete="off"
+              />
+              <p id="erro4"></p>
+
+              <label for="editar_entrada">Entrada/Compra:</label>
+              <input
+                id="editar_entrada"
+                name="editar_entrada"
+                type="number"
+                min="0"
+                step="1"
+              />
+              <p id="erro5"></p>
+
+              <label for="editar_saida">Saída/Venda:</label>
+              <input
+                id="editar_saida"
+                name="editar_saida"
+                type="number"
+                min="0"
+                step="1"
+              />
+              <p id="erro6"></p>
+
+              <label for="editar_data">Data:</label>
+              <input id="editar_data" name="editar_data" type="date" />
+              <p id="erro7"></p>
+              <button id="salvar_editar_ordem" type="button">Salvar</button>
+            </div>
+          </div>
+        </form>
+      </div>
+    </div>
+
+    <script src="../pagina-inventario/js/state.js" defer></script>
+    <script src="../pagina-inventario/js/storage.js" defer></script>
+    <script src="../pagina-inventario/js/dom.js" defer></script>
+    <script src="../pagina-inventario/js/modal.js" defer></script>
+    <script src="../pagina-inventario/js/utils.js" defer></script>
+    <script src="../pagina-inventario/js/render.js" defer></script>
+    <script src="../pagina-inventario/js/pagination.js" defer></script>
+    <script src="ordens.js" defer></script>
+  </body>
+</html>
